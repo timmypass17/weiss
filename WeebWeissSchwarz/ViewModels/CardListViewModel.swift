@@ -7,35 +7,42 @@
 
 import Foundation
 
-@MainActor
-class CardListViewModel: ObservableObject {
-    @Published var cards: [Product] = []
-    @Published var selectedProductType: ProductType = .cards
-    @Published var selectedSort: SortType = .number {
+@Observable class CardListViewModel {
+    var cards: [Card] = []
+    var selectedProductType: ProductType = .cards
+    var selectedSort: SortType = .number {
         didSet {
             updateProducts()
         }
     }
-    @Published var filteredText: String = "" {
+    var filteredText: String = "" {
         didSet {
             updateProducts()
         }
     }
-    @Published var isShowingPrice: Bool = false
-    @Published var isShowingOwned: Bool = false
-    @Published var selectedCard: Product? = nil
+    var isShowingPrice: Bool = true
+    var isShowingRarity: Bool = true
+    var isShowingOwned: Bool = false
+    var selectedCard: Card? = nil
     
-    var cards_: [Product] = []
+    @ObservationIgnored
+    var cards_: [Card] = []
     let service = WeissSchwarzService()
     
-    init(groupID: Int) {
+    let group: Group
+    let collectionName: String
+    
+    init(group: Group, collectionName: String) {
+        self.group = group
+        self.collectionName = collectionName
         Task {
             do {
-                let products: [Product] = try await service.getProducts(groupID: groupID)
+                let products: [Card] = try await service.getProducts(groupID: group.id)
+                print("[CardListViewModel] getProducts(\(group.id)) -> Count: \(products.count)")
                 cards_ = products.filter { $0.isCard }
                 cards = cards_
             } catch {
-                print("Error getting products: \(error)")
+                print("Error getting products \(group.id): \(error)")
             }
         }
     }

@@ -6,12 +6,12 @@
 //
 
 import Foundation
+import SwiftUI
 
-// Publishing changes from background threads is not allowed; make sure to publish values from the main thread (via operators like receive(on:)) on model updates.
-@MainActor
-class DiscoverViewModel: ObservableObject {
-    @Published var groups: [Group] = []
-    @Published var selectedSort: Sort = .newest {
+
+@Observable class DiscoverViewModel {
+    var groups: [Group] = []
+    var selectedSort: Sort = .newest {
         willSet {
             sortValueDidChange(newValue)
         }
@@ -26,8 +26,14 @@ class DiscoverViewModel: ObservableObject {
     
     init() {
         Task {
-            groups = (try? await service.getGroups(.animeID)) ?? []
-            sortValueDidChange(.newest) // TODO: use user prefrence
+            do {
+                groups = try await service.getGroups(.weissSchwarz)
+                print("[DiscoverViewModel] getGroups() -> Count: \(groups.count)")
+                sortValueDidChange(.newest) // TODO: use user prefrence
+                
+            } catch {
+                print("Error fetching groups: \(error)")
+            }
         }
     }
     

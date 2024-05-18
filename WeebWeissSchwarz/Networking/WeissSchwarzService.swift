@@ -8,15 +8,15 @@
 import Foundation
 
 struct WeissSchwarzService {
-    func getGroups(_ categoryID: CategoryID) async throws -> [Group] {
-        let request = GroupAPIRequest(categoryID: categoryID)
+    func getGroups(_ category: Category) async throws -> [Group] {
+        let request = GroupAPIRequest(category: category)
         let groups: [Group] = try await sendRequest(request)
         return groups
     }
     
-    func getProducts(groupID: Int) async throws -> [Product] {
+    func getProducts(groupID: Int) async throws -> [Card] {
         let request = ProductAPIRequest(groupID: groupID)
-        let products: [Product] = try await sendRequest(request)
+        let products: [Card] = try await sendRequest(request)
         var cards = products.filter { $0.isCard }
         
         let prices: [Price] = try await getPrices(groupID: groupID)
@@ -37,6 +37,13 @@ struct WeissSchwarzService {
     }
 }
 
-enum CategoryID: Int {
-    case animeID = 20
+enum Category: String {
+    case weissSchwarz = "Weiss Schwarz"
+    
+    var id: Int {
+        switch self {
+        case .weissSchwarz:
+            return 20
+        }
+    }
 }

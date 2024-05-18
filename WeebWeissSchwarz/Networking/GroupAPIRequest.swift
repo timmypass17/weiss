@@ -8,10 +8,10 @@
 import Foundation
 
 struct GroupAPIRequest: APIRequest {
-    var categoryID: CategoryID
+    var category: Category
     
     var urlRequest: URLRequest {
-        return URLRequest(url: URL(string: "https://tcgcsv.com/\(categoryID.rawValue)/groups")!)
+        return URLRequest(url: URL(string: "https://tcgcsv.com/\(category.id)/groups")!)
     }
     
     func decodeResponse(data: Data) throws -> [Group] {

@@ -8,11 +8,16 @@
 import SwiftUI
 
 struct CardListView: View {
-    @StateObject var cardListViewModel: CardListViewModel
+    @State var cardListViewModel: CardListViewModel
     let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
     
-    init(groupID: Int) {
-        self._cardListViewModel = StateObject(wrappedValue: CardListViewModel(groupID: groupID))
+    init(group: Group, collectionName: String) {
+        self._cardListViewModel = State(wrappedValue: CardListViewModel(group: group, collectionName: collectionName))
+    }
+    
+    init(userGroup: UserGroup) {
+        let group = Group(id: userGroup.id, name: userGroup.name, abbreviation: "ABBR", publishedOn: .now)
+        self._cardListViewModel = State(wrappedValue: CardListViewModel(group: group, collectionName: userGroup.collection!.name))
     }
     
     var body: some View {
@@ -23,10 +28,10 @@ struct CardListView: View {
                         Button {
                             cardListViewModel.selectedCard = card
                         } label: {
-                            ProductCell(
-                                product: card,
+                            CardCell(
+                                card: card,
                                 width: geometry.size.width * 0.3,
-                                isShowingPrice: cardListViewModel.isShowingPrice,
+                                isShowingPrice: cardListViewModel.isShowingPrice, isShowingRarity: cardListViewModel.isShowingRarity,
                                 isOwned: true
                             )
                         }
@@ -35,6 +40,7 @@ struct CardListView: View {
                 }
                 
             }
+            .navigationTitle(cardListViewModel.group.name)
             .searchable(text: $cardListViewModel.filteredText, prompt: "Filter by name")
             .padding([.horizontal, .bottom])
             .toolbar {
@@ -50,23 +56,24 @@ struct CardListView: View {
                     }
                     
                     Section("Card Display") {
-                        Toggle("Price", isOn: $cardListViewModel.isShowingPrice)
-                        Toggle("Owned", isOn: $cardListViewModel.isShowingOwned)
+                        Toggle("Show Price", isOn: $cardListViewModel.isShowingPrice)
+                        Toggle("Show Rarity", isOn: $cardListViewModel.isShowingRarity)
+                        Toggle("Show Owned", isOn: $cardListViewModel.isShowingOwned)
                     }
                 }
             }
             .sheet(item: $cardListViewModel.selectedCard) { card in
                 NavigationStack {
                     CardDetail(cardDetailViewModel: CardDetailViewModel(card: card))
+                        .environment(cardListViewModel)
                 }
             }
         }
     }
 }
 
-#Preview {
-    NavigationStack {
-        CardListView(groupID: 23307)
-            .navigationTitle("Chainsaw Man")
-    }
-}
+//#Preview {
+//    NavigationStack {
+//        CardListView(group: Group(id: 23307, name: "Chainsaw Man", abbreviation: "CSM", publishedOn: .now), collectionName: "Weiss Schwarz")
+//    }
+//}

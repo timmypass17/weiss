@@ -7,20 +7,20 @@
 
 import Foundation
 
-class CardDetailViewModel: ObservableObject {
-    let card: Product
-    @Published var isExpandedInfo = true
-    @Published var isExpandedPrices = true
-    @Published var isExpandedAdditionalPrices = false
-    @Published var isExpandedCardText = false
-    @Published var selectedStatus: Status = .unowned {
+@Observable class CardDetailViewModel {
+    let card: Card
+    var isExpandedInfo = true
+    var isExpandedPrices = true
+    var isExpandedAdditionalPrices = false
+    var isExpandedCardText = false
+    var selectedStatus: CardStatus = .unowned {
         willSet {
             if case .owned = newValue {
                 quantity = 1
             }
         }
     }
-    @Published var quantity = 1 {
+    var quantity = 1 {
         willSet {
             if newValue == 0 {
                 selectedStatus = .unowned
@@ -28,12 +28,13 @@ class CardDetailViewModel: ObservableObject {
         }
     }
     
-    enum Status: String, CaseIterable, Identifiable {
-        case owned, unowned, wishlist
-        var id: Self { self }
-    }
-    
-    init(card: Product) {
+    init(card: Card) {
         self.card = card
     }
+}
+
+// Relate a model class to static data (ex. enum) https://developer.apple.com/documentation/swiftdata/defining-data-relationships-with-enumerations-and-model-classes#Relate-a-model-class-to-static-data
+enum CardStatus: String, CaseIterable, Identifiable, Codable {
+    case owned, unowned, wishlist
+    var id: Self { self }
 }

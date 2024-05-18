@@ -10,34 +10,42 @@ import SwiftData
 
 @main
 struct WeebWeissSchwarzApp: App {
-//    var sharedModelContainer: ModelContainer = {
-//        let schema = Schema([
-//            Item.self,
-//        ])
-//        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-//
-//        do {
-//            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-//        } catch {
-//            fatalError("Could not create ModelContainer: \(error)")
-//        }
-//    }()
-    @StateObject var discoverViewModel = DiscoverViewModel()
+    @State var discoverViewModel = DiscoverViewModel()
     
     var body: some Scene {
         WindowGroup {
             TabView {
                 NavigationStack {
-                    HomeView()
+                    CollectionList()
                 }
                 .tabItem { Label("Collection", systemImage: "list.bullet") }
                 
                 NavigationStack {
                     DiscoverView()
-                        .environmentObject(discoverViewModel)
+                        .environment(discoverViewModel)
                 }
                 .tabItem { Label("Discover", systemImage: "magnifyingglass") }
             }
         }
+        .modelContainer(for: UserCard.self) // infers UserGroup, UserCollection as well
     }
 }
+
+@MainActor
+let previewContainer: ModelContainer = {
+    do {
+        let container = try ModelContainer(
+            for: UserCollection.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        let modelContext = container.mainContext
+        if try modelContext.fetch(FetchDescriptor<UserCollection>()).isEmpty {
+            UserCollection.samples.forEach { 
+                container.mainContext.insert($0)
+            }
+        }
+        return container
+    } catch {
+        fatalError("Failed to create container")
+    }
+}()

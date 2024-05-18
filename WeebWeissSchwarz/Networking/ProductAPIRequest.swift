@@ -14,7 +14,7 @@ struct ProductAPIRequest: APIRequest {
         return URLRequest(url: URL(string: "https://tcgcsv.com/20/\(groupID)/products")!)
     }
     
-    func decodeResponse(data: Data) throws -> [Product] {
+    func decodeResponse(data: Data) throws -> [Card] {
         let decoder = JSONDecoder()
         let productResponse = try decoder.decode(ProductResponse.self, from: data)
         return productResponse.results

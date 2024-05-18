@@ -19,6 +19,8 @@ struct Group: Identifiable {
     var publishedOn: Date
 }
 
+extension Group: Hashable {}
+
 extension Group: Decodable {
     enum CodingKeys: String, CodingKey {
         case id = "groupId"
@@ -42,19 +44,17 @@ extension Group: Decodable {
         } else {
             self.publishedOn = .distantFuture
         }
-
+        
     }
 }
 
 
-extension GroupResponse {
-    static let sample: GroupResponse = GroupResponse(
-        totalItems: 2,
-        results: [
-            Group(id: 23508, name: "JoJo's Bizarre Adventure: Stardust Crusaders Premium Booster", abbreviation: "JJ", publishedOn: .now),
-            Group(id: 23507, name: "[OSHI NO KO]", abbreviation: "OSK", publishedOn: .now)
-        ]
-    )
+extension Group {
+    static let sample: [Group] = [
+        Group(id: 23307, name: "Chainsaw Man", abbreviation: "CSM", publishedOn: .now),
+        Group(id: 23508, name: "JoJo's Bizarre Adventure: Stardust Crusaders Premium Booster", abbreviation: "JJ", publishedOn: .now),
+        Group(id: 23507, name: "[OSHI NO KO]", abbreviation: "OSK", publishedOn: .now)
+    ]
 }
 
 //let dateString = "2024-10-04T00:00:00"

@@ -6,14 +6,16 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct ProductResponse: Decodable {
     var totalItems: Int
-    var results: [Product]
+    var results: [Card]
 }
 
-struct Product {
+struct Card {
     var id: Int
+    var groupId: Int
     var name: String
     var imageUrl: String
     var price: Price?
@@ -40,7 +42,7 @@ struct Product {
         return extendedData.first(where: { $0.name == "CardText" })?.value ?? ""
     }
     
-    enum Rarity: String, CaseIterable {
+    enum Rarity: String, CaseIterable, Codable {
         case unknown = "N/A"
         case pr = "Promo"
         case td = "Trial Deck"
@@ -90,6 +92,35 @@ struct Product {
                 return "SP"
             }
         }
+        
+        var color: Color {
+            switch self {
+            case .unknown:
+                return .secondary
+            case .pr:
+                return Color(red: 1.0, green: 0.84, blue: 0.0)
+            case .td:
+                return Color(red: 0.68, green: 0.85, blue: 0.9)
+            case .cc:
+                return Color(red: 0.5, green: 0.5, blue: 0.5)
+            case .cr:
+                return Color(red: 0.5, green: 0.5, blue: 0.5)
+            case .c:
+                return Color(red: 0.5, green: 0.5, blue: 0.5)
+            case .u:
+                return .green
+            case .r:
+                return .blue
+            case .rr:
+                return .blue
+            case .sr:
+                return .purple
+            case .rrr:
+                return .orange
+            case .sp:
+                return .red
+            }
+        }
     }
 }
 
@@ -116,21 +147,23 @@ extension ExtendedData: Identifiable {
     }
 }
 
-extension Product: Decodable {
+extension Card: Decodable {
     enum CodingKeys: String, CodingKey {
         case id = "productId"
+        case groupId
         case name
         case imageUrl
         case extendedData
     }
 }
 
-extension Product: Identifiable {}
+extension Card: Identifiable {}
 
-extension Product {
-    static let samples: [Product] = [
-        Product(
+extension Card {
+    static let samples: [Card] = [
+        Card(
             id: 534213,
+            groupId: 23307,
             name: "Blood Fiend, Power (SP)",
             imageUrl: "https://tcgplayer-cdn.tcgplayer.com/product/534213_200w.jpg",
             price: Price(productId: 534213, lowPrice: 117.76, midPrice: 130.00, highPrice: 188.88, marketPrice: 131.15),

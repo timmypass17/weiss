@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ProductImage: View {
+struct CardImage: View {
     let imageUrl: String
     let width: CGFloat
     
