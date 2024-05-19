@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct GroupCell: View {
+struct UserGroupCell: View {
     var group: UserGroup
     
     var body: some View {

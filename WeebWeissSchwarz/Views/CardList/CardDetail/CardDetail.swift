@@ -12,8 +12,12 @@ import SwiftData
 struct CardDetail: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(CardListViewModel.self) private var cardListViewModel: CardListViewModel
-    @State var cardDetailViewModel: CardDetailViewModel
     @Environment(\.modelContext) private var modelContext // to save/update cards
+    @State var cardDetailViewModel: CardDetailViewModel
+    
+    init(card: Card) {
+        self._cardDetailViewModel = State(initialValue: CardDetailViewModel(card: card))
+    }
     
     var body: some View {
         GeometryReader { geometry in
@@ -129,28 +133,28 @@ struct CardDetail: View {
     }
     
     func saveCard() {
-        let userCollection: UserCollection
+        let userCategory: UserCategory
         let userGroup: UserGroup
         
-        if let existingCollection = fetchCollection(name: cardListViewModel.collectionName) {
-            userCollection = existingCollection
+        if let existingCategory = fetchUserCategory(categoryID: cardListViewModel.category.categoryId) {
+            userCategory = existingCategory
         } else {
-            let collectionToAdd = UserCollection(name: cardListViewModel.collectionName)
-            userCollection = collectionToAdd
-            modelContext.insert(userCollection)
+            let collectionToAdd = UserCategory(categoryID: cardListViewModel.category.categoryId, name: cardListViewModel.category.name)
+            userCategory = collectionToAdd
+            modelContext.insert(userCategory)
         }
         
-        if let existingUserGroup = fetchGroup(groupId: cardDetailViewModel.card.groupId) {
+        if let existingUserGroup = fetchUserGroup(groupID: cardDetailViewModel.card.groupId) {
             userGroup = existingUserGroup
         } else {
             let userGroupToAdd = UserGroup(
-                id: cardListViewModel.group.id,
+                groupID: cardListViewModel.group.id,
                 name: cardListViewModel.group.name
             )
             userGroup = userGroupToAdd
+            userGroup.collection = userCategory   // need to set both relationships
+            userCategory.groups.append(userGroup)
             modelContext.insert(userGroup)
-            userGroup.collection = userCollection   // need to set both relationships
-            userCollection.groups.append(userGroup)
         }
         
         let cardToAdd = UserCard(
@@ -162,43 +166,45 @@ struct CardDetail: View {
             group: userGroup
         )
         
-        modelContext.insert(cardToAdd)
         userGroup.cards.append(cardToAdd)
+        modelContext.insert(cardToAdd)
     }
     
-    func fetchGroup(groupId: Int) -> UserGroup? {
+    func fetchUserGroup(groupID: Int) -> UserGroup? {
         do {
             let groupPredicate = #Predicate<UserGroup> {
-                $0.id == groupId
+                $0.groupID == groupID
             }
-            let descriptor = FetchDescriptor(predicate: groupPredicate)
+            var descriptor = FetchDescriptor(predicate: groupPredicate)
+            descriptor.fetchLimit =  1
             let groups: [UserGroup] = try modelContext.fetch(descriptor)
             return groups.first
         } catch {
-            print("Error fetching group \(groupId): \(error)")
+            print("Error fetching group \(groupID): \(error)")
             return nil
         }
     }
     
     // Weiss Schawarz (no id)
-    func fetchCollection(name: String) -> UserCollection? {
+    func fetchUserCategory(categoryID: Int) -> UserCategory? {
         do {
-            let groupPredicate = #Predicate<UserCollection> {
-                $0.name == name
+            let groupPredicate = #Predicate<UserCategory> {
+                $0.categoryID == categoryID
             }
-            let descriptor = FetchDescriptor(predicate: groupPredicate)
-            let collection: [UserCollection] = try modelContext.fetch(descriptor)
+            var descriptor = FetchDescriptor(predicate: groupPredicate)
+            descriptor.fetchLimit =  1
+            let collection: [UserCategory] = try modelContext.fetch(descriptor)
             return collection.first
         } catch {
-            print("Error fetching collection \(name): \(error)")
+            print("Error fetching collection \(categoryID): \(error)")
             return nil
         }
     }
 }
 
-#Preview {
-    NavigationStack {
-        CardDetail(cardDetailViewModel: CardDetailViewModel(card: Card.samples[0]))
-            .environment(CardListViewModel(group: Group.sample[0], collectionName: "Weiss"))
-    }
-}
+//#Preview {
+//    NavigationStack {
+//        CardDetail(cardDetailViewModel: CardDetailViewModel(card: Card.samples[0]))
+//            .environment(CardListViewModel(group: Group.sample[0], category: Category.samples[0]))
+//    }
+//}

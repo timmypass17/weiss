@@ -10,13 +10,13 @@ import SwiftData
 
 @Model
 class UserGroup {
-    @Attribute(.unique) var id: Int
+    @Attribute(.unique) var groupID: Int
     var name: String
     
     @Relationship(deleteRule: .cascade, inverse: \UserCard.group)   // .cascade = delete group -> deletes cards
     var cards: [UserCard] = []
     
-    var collection: UserCollection?
+    var collection: UserCategory?
     
     var rarityCount: [RarityCount] {
         var rarityFreq: [Card.Rarity: Int] = [:]
@@ -26,8 +26,8 @@ class UserGroup {
         return rarityFreq.map { RarityCount(rarity: $0.key, count: $0.value) }.sorted(by: { $0.rarity < $1.rarity } )
     }
     
-    init(id: Int, name: String, cards: [UserCard] = []) {
-        self.id = id
+    init(groupID: Int, name: String, cards: [UserCard] = []) {
+        self.groupID = groupID
         self.name = name
         self.cards = cards
     }
@@ -35,8 +35,8 @@ class UserGroup {
 
 extension UserGroup {
     static let samples: [UserGroup] = [
-        UserGroup(id: 23307, name: "Chainsaw Man", cards: UserCard.samples),
-        UserGroup(id: 23249, name: "Spy x Family")
+        UserGroup(groupID: 23307, name: "Chainsaw Man", cards: UserCard.samples),
+        UserGroup(groupID: 23249, name: "Spy x Family")
     ]
 }
 

@@ -13,6 +13,12 @@ struct CardListView: View {
     let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
     var userGroup: UserGroup?
 
+    // SwiftUI EnvironmentObject not available in View initializer. It is injected after object initialiazation.
+    init(group: Group, category: Category, userGroup: UserGroup? = nil) {
+        self._cardListViewModel = State(initialValue: CardListViewModel(group: group, category: category))
+        self.userGroup = userGroup
+    }
+
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -58,7 +64,7 @@ struct CardListView: View {
             }
             .sheet(item: $cardListViewModel.selectedCard) { card in
                 NavigationStack {
-                    CardDetail(cardDetailViewModel: CardDetailViewModel(card: card))
+                    CardDetail(card: card)
                         .environment(cardListViewModel)
                 }
             }

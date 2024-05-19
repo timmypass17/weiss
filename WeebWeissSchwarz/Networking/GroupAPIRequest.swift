@@ -11,7 +11,7 @@ struct GroupAPIRequest: APIRequest {
     var category: Category
     
     var urlRequest: URLRequest {
-        return URLRequest(url: URL(string: "https://tcgcsv.com/\(category.id)/groups")!)
+        return URLRequest(url: URL(string: "https://tcgcsv.com/\(category.categoryId)/groups")!)
     }
     
     func decodeResponse(data: Data) throws -> [Group] {

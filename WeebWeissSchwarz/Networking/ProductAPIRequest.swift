@@ -8,10 +8,11 @@
 import Foundation
 
 struct ProductAPIRequest: APIRequest {
+    var categoryID: Int
     var groupID: Int
     
     var urlRequest: URLRequest {
-        return URLRequest(url: URL(string: "https://tcgcsv.com/20/\(groupID)/products")!)
+        return URLRequest(url: URL(string: "https://tcgcsv.com/\(categoryID)/\(groupID)/products")!)
     }
     
     func decodeResponse(data: Data) throws -> [Card] {

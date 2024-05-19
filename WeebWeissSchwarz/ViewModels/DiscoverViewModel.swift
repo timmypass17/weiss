@@ -9,14 +9,15 @@ import Foundation
 import SwiftUI
 
 
-@Observable class DiscoverViewModel {
+@Observable class GroupListViewModel {
     var groups: [Group] = []
     var selectedSort: Sort = .newest {
         willSet {
             sortValueDidChange(newValue)
         }
     }
-
+    var category: Category
+    
     let service = WeissSchwarzService()
     
     enum Sort: String, CaseIterable, Identifiable {
@@ -24,10 +25,11 @@ import SwiftUI
         var id: Self { self }
     }
     
-    init() {
+    init(category: Category) {
+        self.category = category
         Task {
             do {
-                groups = try await service.getGroups(.weissSchwarz)
+                groups = try await service.getGroups(category)
                 print("[DiscoverViewModel] getGroups() -> Count: \(groups.count)")
                 sortValueDidChange(.newest) // TODO: use user prefrence
                 

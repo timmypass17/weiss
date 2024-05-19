@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct GroupList: View {
-    var collection: UserCollection
+struct UserGroupList: View {
+    var collection: UserCategory
     
     var body: some View {
         Section(collection.name) {
             ForEach(collection.groups.sorted { $0.name < $1.name }) { userGroup in
                 NavigationLink(value: userGroup) {
-                    GroupCell(group: userGroup)
+                    UserGroupCell(group: userGroup)
                 }
             }
         }

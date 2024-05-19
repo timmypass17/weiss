@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DiscoverCell: View {
+struct GroupCell: View {
     var group: Group
     var userGroup: UserGroup?
     

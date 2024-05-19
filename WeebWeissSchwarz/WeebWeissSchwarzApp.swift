@@ -10,19 +10,16 @@ import SwiftData
 
 @main
 struct WeebWeissSchwarzApp: App {
-    @State var discoverViewModel = DiscoverViewModel()
-    
     var body: some Scene {
         WindowGroup {
             TabView {
                 NavigationStack {
-                    CollectionList()
+                    UserCategoryList()
                 }
                 .tabItem { Label("Collection", systemImage: "list.bullet") }
                 
                 NavigationStack {
-                    DiscoverView()
-                        .environment(discoverViewModel)
+                    CategoryList()
                 }
                 .tabItem { Label("Discover", systemImage: "magnifyingglass") }
             }
@@ -35,12 +32,12 @@ struct WeebWeissSchwarzApp: App {
 let previewContainer: ModelContainer = {
     do {
         let container = try ModelContainer(
-            for: UserCollection.self,
+            for: UserCategory.self,
             configurations: ModelConfiguration(isStoredInMemoryOnly: true)
         )
         let modelContext = container.mainContext
-        if try modelContext.fetch(FetchDescriptor<UserCollection>()).isEmpty {
-            UserCollection.samples.forEach { 
+        if try modelContext.fetch(FetchDescriptor<UserCategory>()).isEmpty {
+            UserCategory.samples.forEach {
                 container.mainContext.insert($0)
             }
         }

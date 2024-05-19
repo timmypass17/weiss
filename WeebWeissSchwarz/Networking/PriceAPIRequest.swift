@@ -8,11 +8,11 @@
 import Foundation
 
 struct PriceAPIRequest: APIRequest {
-    var categoryID: Category = .weissSchwarz
+    var categoryID: Int
     var groupID: Int
     
     var urlRequest: URLRequest {
-        return URLRequest(url: URL(string: "https://tcgcsv.com/\(categoryID.id)/\(groupID)/prices")!)
+        return URLRequest(url: URL(string: "https://tcgcsv.com/\(categoryID)/\(groupID)/prices")!)
     }
     
     func decodeResponse(data: Data) throws -> [Price] {

@@ -24,20 +24,19 @@ import Foundation
     var isShowingRarity: Bool = true
     var isShowingMissing: Bool = true
     var selectedCard: Card? = nil
-    
     @ObservationIgnored
     var cards_: [Card] = []
     let service = WeissSchwarzService()
     
     let group: Group
-    let collectionName: String
+    let category: Category
     
-    init(group: Group, collectionName: String) {
+    init(group: Group, category: Category) {
         self.group = group
-        self.collectionName = collectionName
+        self.category = category
         Task {
             do {
-                let products: [Card] = try await service.getProducts(groupID: group.id)
+                let products: [Card] = try await service.getProducts(categoryID: category.categoryId, groupID: group.id)
                 print("[CardListViewModel] getProducts(\(group.id)) -> Count: \(products.count)")
                 cards_ = products.filter { $0.isCard }
                 cards = cards_

@@ -8,22 +8,26 @@
 import SwiftUI
 import SwiftData
 
-struct DiscoverView: View {
-    @Environment(DiscoverViewModel.self) var discoverViewModel: DiscoverViewModel
+struct GroupList: View {
+    @State var groupListViewModel: GroupListViewModel
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \UserCollection.name) var userCollection: [UserCollection]
-
+    @Query(sort: \UserCategory.name) var userCategory: [UserCategory]
+    
+    init(category: Category) {
+        self._groupListViewModel = State(initialValue: GroupListViewModel(category: category))
+    }
+    
     var body: some View {
-        @Bindable var discoverViewModel = discoverViewModel
+        @Bindable var groupListViewModel = groupListViewModel
         List {
-            Section("Weiss Schwarz") {
-                ForEach(discoverViewModel.groups) { group in
+            Section(groupListViewModel.category.name) {
+                ForEach(groupListViewModel.groups) { group in
                     NavigationLink(value: group) {
-                        DiscoverCell(
+                        GroupCell(
                             group: group,
-                            userGroup: userCollection
+                            userGroup: userCategory
                                 .first(where: { $0.name == "Weiss Schwarz"})?
-                                .groups.first(where: { $0.id == group.id })
+                                .groups.first(where: { $0.groupID == group.id })
                             
                         )
                     }
@@ -32,15 +36,16 @@ struct DiscoverView: View {
         }
         .navigationDestination(for: Group.self) { group in
             CardListView(
-                cardListViewModel: CardListViewModel(group: group, collectionName: "Weiss Schwarz"),
+                group: group,
+                category: groupListViewModel.category,
                 userGroup: fetchGroup(groupId: group.id)
             )
         }
         .navigationTitle("Discover Sets")
         .toolbar {
             Menu {
-                Picker("Select a sorting preference", selection: $discoverViewModel.selectedSort) {
-                    ForEach(DiscoverViewModel.Sort.allCases) { sort in
+                Picker("Select a sorting preference", selection: $groupListViewModel.selectedSort) {
+                    ForEach(GroupListViewModel.Sort.allCases) { sort in
                         Text(sort.rawValue.capitalized)
                     }
                 }
@@ -53,7 +58,7 @@ struct DiscoverView: View {
     func fetchGroup(groupId: Int) -> UserGroup? {
         do {
             let groupPredicate = #Predicate<UserGroup> {
-                $0.id == groupId
+                $0.groupID == groupId
             }
             let descriptor = FetchDescriptor(predicate: groupPredicate)
             let groups: [UserGroup] = try modelContext.fetch(descriptor)
@@ -66,12 +71,12 @@ struct DiscoverView: View {
 }
 // Bindable in view's body: https://developer.apple.com/documentation/swiftui/bindable
 
-#Preview {
-    NavigationStack {
-        DiscoverView()
-            .environment(DiscoverViewModel())
-    }
-}
+//#Preview {
+//    NavigationStack {
+//        GroupList()
+//            .environment(DiscoverViewModel())
+//    }
+//}
 
 
 // BAD! Creates destination view (which calls networking code)
