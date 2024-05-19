@@ -9,11 +9,11 @@ import SwiftUI
 import SwiftData
 
 struct UserCategoryList: View {
-    @Query(sort: \UserCategory.name) var userCollection: [UserCategory]
+    var userCategories: [UserCategory]
     
     var body: some View {
         List {
-            ForEach(userCollection) { collection in
+            ForEach(userCategories) { collection in
                 UserGroupList(collection: collection)
             }
         }
@@ -26,9 +26,9 @@ struct UserCategoryList: View {
     }
 }
 
-#Preview {
-    NavigationStack {
-        UserCategoryList()
-            .modelContainer(previewContainer)
-    }
-}
+//#Preview {
+//    NavigationStack {
+//        UserCategoryList()
+//            .modelContainer(previewContainer)
+//    }
+//}

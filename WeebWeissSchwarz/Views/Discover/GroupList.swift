@@ -11,10 +11,11 @@ import SwiftData
 struct GroupList: View {
     @State var groupListViewModel: GroupListViewModel
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \UserCategory.name) var userCategory: [UserCategory]
+    var userCategories: [UserCategory]
     
-    init(category: Category) {
+    init(category: Category, userCategories: [UserCategory]) {
         self._groupListViewModel = State(initialValue: GroupListViewModel(category: category))
+        self.userCategories = userCategories
     }
     
     var body: some View {
@@ -25,7 +26,7 @@ struct GroupList: View {
                     NavigationLink(value: group) {
                         GroupCell(
                             group: group,
-                            userGroup: userCategory
+                            userGroup: userCategories
                                 .first(where: { $0.name == "Weiss Schwarz"})?
                                 .groups.first(where: { $0.groupID == group.id })
                             

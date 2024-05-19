@@ -10,21 +10,30 @@ import SwiftData
 
 @main
 struct WeebWeissSchwarzApp: App {
+    
     var body: some Scene {
         WindowGroup {
-            TabView {
-                NavigationStack {
-                    UserCategoryList()
-                }
-                .tabItem { Label("Collection", systemImage: "list.bullet") }
-                
-                NavigationStack {
-                    CategoryList()
-                }
-                .tabItem { Label("Discover", systemImage: "magnifyingglass") }
-            }
+            WeissTab()
         }
         .modelContainer(for: UserCard.self) // infers UserGroup, UserCollection as well
+    }
+}
+
+struct WeissTab: View {
+    @Query(sort: \UserCategory.name) var userCategories: [UserCategory]
+    
+    var body: some View {
+        TabView {
+            NavigationStack {
+                UserCategoryList(userCategories: userCategories)
+            }
+            .tabItem { Label("Collection", systemImage: "list.bullet") }
+            
+            NavigationStack {
+                CategoryList(userCategories: userCategories)
+            }
+            .tabItem { Label("Discover", systemImage: "magnifyingglass") }
+        }
     }
 }
 

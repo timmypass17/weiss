@@ -137,6 +137,10 @@ struct CardDetail: View {
             if let userCard = cardDetailViewModel.userCard {
                 print("Delete Card")
                 modelContext.delete(userCard)
+                // IMPORTANT: Also have to remove card reference aswell to update UI
+                if let index = userCard.group?.cards.firstIndex(where: { $0.id == cardDetailViewModel.card.id }) {
+                    userCard.group?.cards.remove(at: index)
+                }
             }
         } else {
             print("Save card")
