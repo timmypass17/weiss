@@ -12,15 +12,17 @@ struct CardCell: View {
     let width: CGFloat
     var isShowingPrice: Bool
     var isShowingRarity: Bool
+    var isShowingMissing: Bool
     var isOwned: Bool
     
     var height: CGFloat {
         width * (280 / 200)
     }
     
+    
     var body: some View {
         CardImage(imageUrl: card.imageUrl, width: width)
-            .grayscale(isOwned ? 0 : 1)
+            .grayscale(isShowingMissing && !isOwned ? 1 : 0)
             .overlay(alignment: .topTrailing) {
                 VStack(alignment: .trailing, spacing: 2) {
                     if isShowingPrice {
@@ -47,7 +49,10 @@ struct CardCell: View {
 
                         .background(
                             RoundedRectangle(cornerRadius: 5)
-                                .fill(card.rarity.color.opacity(1))
+                                .fill(
+                                    (isShowingMissing && !isOwned ? .black.opacity(0.7) : card.rarity.color)
+//                                        .opacity(isShowingMissing && !isOwned ? 0.2 : 1)
+                                )
                         )
                     }
                 }
@@ -58,9 +63,9 @@ struct CardCell: View {
 
 #Preview {
     HStack {
-        CardCell(card: Card.samples[0], width:  UIScreen.main.bounds.size.width * 0.3, isShowingPrice: true, isShowingRarity: true, isOwned: true)
+        CardCell(card: Card.samples[0], width:  UIScreen.main.bounds.size.width * 0.3, isShowingPrice: true, isShowingRarity: true, isShowingMissing: true, isOwned: true)
         
-        CardCell(card: Card.samples[0], width:  UIScreen.main.bounds.size.width * 0.3, isShowingPrice: false, isShowingRarity: false, isOwned: false)
+        CardCell(card: Card.samples[0], width:  UIScreen.main.bounds.size.width * 0.3, isShowingPrice: true, isShowingRarity: true, isShowingMissing: true, isOwned: false)
     }
     
 }

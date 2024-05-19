@@ -34,7 +34,7 @@
 		326EE8D82BF81B5100F55A6E /* UserGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326EE8D72BF81B5100F55A6E /* UserGroup.swift */; };
 		326EE8DA2BF81B7300F55A6E /* UserCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326EE8D92BF81B7300F55A6E /* UserCard.swift */; };
 		326EE8DC2BF81EAA00F55A6E /* UserCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326EE8DB2BF81EAA00F55A6E /* UserCollection.swift */; };
-		326EE8DF2BF8359C00F55A6E /* GroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326EE8DE2BF8359C00F55A6E /* GroupView.swift */; };
+		326EE8DF2BF8359C00F55A6E /* GroupList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326EE8DE2BF8359C00F55A6E /* GroupList.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,7 +66,7 @@
 		326EE8D72BF81B5100F55A6E /* UserGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserGroup.swift; sourceTree = "<group>"; };
 		326EE8D92BF81B7300F55A6E /* UserCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCard.swift; sourceTree = "<group>"; };
 		326EE8DB2BF81EAA00F55A6E /* UserCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCollection.swift; sourceTree = "<group>"; };
-		326EE8DE2BF8359C00F55A6E /* GroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupView.swift; sourceTree = "<group>"; };
+		326EE8DE2BF8359C00F55A6E /* GroupList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupList.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,7 +85,7 @@
 			children = (
 				326EE89E2BEEB12F00F55A6E /* CollectionList.swift */,
 				326EE8D22BF6B0F300F55A6E /* GroupCell.swift */,
-				326EE8DE2BF8359C00F55A6E /* GroupView.swift */,
+				326EE8DE2BF8359C00F55A6E /* GroupList.swift */,
 				326EE8D42BF6B19400F55A6E /* TagView.swift */,
 			);
 			path = Collection;
@@ -292,7 +292,7 @@
 				326EE8D82BF81B5100F55A6E /* UserGroup.swift in Sources */,
 				326EE8A72BEEB4B400F55A6E /* DiscoverCell.swift in Sources */,
 				326EE88F2BEEADE900F55A6E /* WeebWeissSchwarzApp.swift in Sources */,
-				326EE8DF2BF8359C00F55A6E /* GroupView.swift in Sources */,
+				326EE8DF2BF8359C00F55A6E /* GroupList.swift in Sources */,
 				326EE8AA2BEEB5B700F55A6E /* APIRequest.swift in Sources */,
 				326EE8B12BEEB80500F55A6E /* DiscoverViewModel.swift in Sources */,
 				326EE8C32BF2857C00F55A6E /* Price.swift in Sources */,

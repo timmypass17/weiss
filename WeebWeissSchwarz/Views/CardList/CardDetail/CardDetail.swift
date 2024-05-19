@@ -18,7 +18,7 @@ struct CardDetail: View {
     var body: some View {
         GeometryReader { geometry in
             List {
-                ProductImage(imageUrl: cardDetailViewModel.card.imageUrl, width: geometry.size.width * 0.9)
+                CardImage(imageUrl: cardDetailViewModel.card.imageUrl, width: geometry.size.width * 0.9)
                     .listRowInsets(EdgeInsets()) // removes padding
                 
                 Section("My Collection") {
@@ -199,5 +199,6 @@ struct CardDetail: View {
 #Preview {
     NavigationStack {
         CardDetail(cardDetailViewModel: CardDetailViewModel(card: Card.samples[0]))
+            .environment(CardListViewModel(group: Group.sample[0], collectionName: "Weiss"))
     }
 }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DiscoverCell: View {
     var group: Group
+    var userGroup: UserGroup?
     
     var body: some View {
         VStack(spacing: 4) {
@@ -24,17 +25,17 @@ struct DiscoverCell: View {
             }
             
             HStack {
-                Text("20 / 100")
+                Text("\(userGroup?.cards.count ?? 0) / 100")
                     .foregroundStyle(.secondary)
                     .font(.caption)
-                ProgressView(value: 0.2)
+                ProgressView(value: Double(userGroup?.cards.count ?? 0) / 100)
             }
         }
     }
 }
 
-#Preview {
-    List {
-        DiscoverCell(group: Group.sample[0])
-    }
-}
+//#Preview {
+//    List {
+//        DiscoverCell(group: Group.sample[0])
+//    }
+//}

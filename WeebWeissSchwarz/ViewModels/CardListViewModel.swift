@@ -22,7 +22,7 @@ import Foundation
     }
     var isShowingPrice: Bool = true
     var isShowingRarity: Bool = true
-    var isShowingOwned: Bool = false
+    var isShowingMissing: Bool = true
     var selectedCard: Card? = nil
     
     @ObservationIgnored
@@ -65,6 +65,7 @@ import Foundation
             cards.sort(by: { $0.rarity < $1.rarity })
         }
     }
+    
 }
 
 extension CardListViewModel {

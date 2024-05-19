@@ -10,15 +10,6 @@ import SwiftUI
 struct GroupCell: View {
     var group: UserGroup
     
-//    var rarityCount: [RarityCount] {
-//        let rarityFreq = group.cards.reduce(into: [Card.Rarity : Int]()) { partialResult, userCard in
-//            partialResult[userCard.rarity, default: 0] += 1
-//        }
-//        return rarityFreq.map { RarityCount(rarity: $0.key, count: $0.value) }
-//    }
-    
-
-    
     var body: some View {
         VStack(spacing: 4) {
             HStack {

@@ -6,20 +6,13 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct CardListView: View {
     @State var cardListViewModel: CardListViewModel
     let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
-    
-    init(group: Group, collectionName: String) {
-        self._cardListViewModel = State(wrappedValue: CardListViewModel(group: group, collectionName: collectionName))
-    }
-    
-    init(userGroup: UserGroup) {
-        let group = Group(id: userGroup.id, name: userGroup.name, abbreviation: "ABBR", publishedOn: .now)
-        self._cardListViewModel = State(wrappedValue: CardListViewModel(group: group, collectionName: userGroup.collection!.name))
-    }
-    
+    var userGroup: UserGroup?
+
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
@@ -31,14 +24,15 @@ struct CardListView: View {
                             CardCell(
                                 card: card,
                                 width: geometry.size.width * 0.3,
-                                isShowingPrice: cardListViewModel.isShowingPrice, isShowingRarity: cardListViewModel.isShowingRarity,
-                                isOwned: true
+                                isShowingPrice: cardListViewModel.isShowingPrice,
+                                isShowingRarity: cardListViewModel.isShowingRarity,
+                                isShowingMissing: cardListViewModel.isShowingMissing,
+                                isOwned: userGroup?.cards.contains(where: { $0.id == card.id }) ?? false
                             )
                         }
                         .buttonStyle(.plain)
                     }
                 }
-                
             }
             .navigationTitle(cardListViewModel.group.name)
             .searchable(text: $cardListViewModel.filteredText, prompt: "Filter by name")
@@ -58,7 +52,7 @@ struct CardListView: View {
                     Section("Card Display") {
                         Toggle("Show Price", isOn: $cardListViewModel.isShowingPrice)
                         Toggle("Show Rarity", isOn: $cardListViewModel.isShowingRarity)
-                        Toggle("Show Owned", isOn: $cardListViewModel.isShowingOwned)
+                        Toggle("Show Missing", isOn: $cardListViewModel.isShowingMissing)
                     }
                 }
             }
@@ -70,10 +64,5 @@ struct CardListView: View {
             }
         }
     }
+    
 }
-
-//#Preview {
-//    NavigationStack {
-//        CardListView(group: Group(id: 23307, name: "Chainsaw Man", abbreviation: "CSM", publishedOn: .now), collectionName: "Weiss Schwarz")
-//    }
-//}

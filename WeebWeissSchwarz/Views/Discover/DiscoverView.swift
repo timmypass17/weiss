@@ -6,31 +6,35 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct DiscoverView: View {
     @Environment(DiscoverViewModel.self) var discoverViewModel: DiscoverViewModel
-    
+    @Environment(\.modelContext) private var modelContext
+    @Query(sort: \UserCollection.name) var userCollection: [UserCollection]
+
     var body: some View {
         @Bindable var discoverViewModel = discoverViewModel
         List {
             Section("Weiss Schwarz") {
                 ForEach(discoverViewModel.groups) { group in
                     NavigationLink(value: group) {
-                        DiscoverCell(group: group)
+                        DiscoverCell(
+                            group: group,
+                            userGroup: userCollection
+                                .first(where: { $0.name == "Weiss Schwarz"})?
+                                .groups.first(where: { $0.id == group.id })
+                            
+                        )
                     }
-                    
-                    // BAD! Creates destination view (which calls networking code)
-//                    NavigationLink {
-//                        CardListView(group: group, collectionName: "Weiss Schwarz")
-//                    } label: {
-//                        DiscoverCell(group: group)
-//                    }
-
                 }
             }
         }
         .navigationDestination(for: Group.self) { group in
-            CardListView(group: group, collectionName: "Weiss Schwarz")
+            CardListView(
+                cardListViewModel: CardListViewModel(group: group, collectionName: "Weiss Schwarz"),
+                userGroup: fetchGroup(groupId: group.id)
+            )
         }
         .navigationTitle("Discover Sets")
         .toolbar {
@@ -45,6 +49,20 @@ struct DiscoverView: View {
             }
         }
     }
+    
+    func fetchGroup(groupId: Int) -> UserGroup? {
+        do {
+            let groupPredicate = #Predicate<UserGroup> {
+                $0.id == groupId
+            }
+            let descriptor = FetchDescriptor(predicate: groupPredicate)
+            let groups: [UserGroup] = try modelContext.fetch(descriptor)
+            return groups.first
+        } catch {
+            print("Error fetching group \(groupId): \(error)")
+            return nil
+        }
+    }
 }
 // Bindable in view's body: https://developer.apple.com/documentation/swiftui/bindable
 
@@ -54,3 +72,11 @@ struct DiscoverView: View {
             .environment(DiscoverViewModel())
     }
 }
+
+
+// BAD! Creates destination view (which calls networking code)
+//                    NavigationLink {
+//                        CardListView(group: group, collectionName: "Weiss Schwarz")
+//                    } label: {
+//                        DiscoverCell(group: group)
+//                    }
