@@ -35,10 +35,9 @@ struct GroupList: View {
             }
         }
         .navigationDestination(for: Group.self) { group in
-            CardListView(
+            CardList(
                 group: group,
                 category: groupListViewModel.category
-//                userGroup: fetchGroup(groupId: group.id)
             )
         }
         .navigationTitle("Discover Sets")

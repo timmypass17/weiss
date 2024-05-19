@@ -14,8 +14,8 @@ struct CardDetail: View {
     @Environment(\.modelContext) private var modelContext // to save/update cards
     @State var cardDetailViewModel: CardDetailViewModel
     
-    init(card: Card, group: Group, category: Category) {
-        self._cardDetailViewModel = State(initialValue: CardDetailViewModel(card: card, group: group, category: category))
+    init(card: Card, group: Group, category: Category, userCard: UserCard?) {
+        self._cardDetailViewModel = State(initialValue: CardDetailViewModel(card: card, group: group, category: category, userCard: userCard))
     }
     
     var body: some View {
@@ -29,8 +29,8 @@ struct CardDetail: View {
                         Text("Status")
                         Spacer()
                         Menu(cardDetailViewModel.selectedStatus.rawValue.capitalized) {
-                            Picker("Cad Status", selection: $cardDetailViewModel.selectedStatus) {
-                                ForEach(CardStatus.allCases) { status in
+                            Picker("Card Status", selection: $cardDetailViewModel.selectedStatus) {
+                                ForEach(UserCard.CardStatus.allCases) { status in
                                     Text(status.rawValue.capitalized)
                                 }
                             }
@@ -123,11 +123,24 @@ struct CardDetail: View {
                 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-                        saveCard()
+                        didTapSaveButton()
                         dismiss()
                     }
                 }
             }
+        }
+    }
+    
+    func didTapSaveButton() {
+        if cardDetailViewModel.selectedStatus == .unowned {
+            print("Unowned")
+            if let userCard = cardDetailViewModel.userCard {
+                print("Delete Card")
+                modelContext.delete(userCard)
+            }
+        } else {
+            print("Save card")
+            saveCard()
         }
     }
     
@@ -164,6 +177,7 @@ struct CardDetail: View {
             rarity: cardDetailViewModel.card.rarity,
             group: userGroup
         )
+        print("Card Status: \(cardToAdd.cardStatus)")
         
         userGroup.cards.append(cardToAdd)
         modelContext.insert(cardToAdd)

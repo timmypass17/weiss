@@ -11,34 +11,30 @@ import Foundation
     let card: Card // TODO: Maybe make card have reference to group, and group have reference to category
     let group: Group
     let category: Category
+    let userCard: UserCard?
     var isExpandedInfo = true
     var isExpandedPrices = true
     var isExpandedAdditionalPrices = false
     var isExpandedCardText = false
-    var selectedStatus: CardStatus = .unowned {
+    var selectedStatus: UserCard.CardStatus = .unowned {
         willSet {
             if case .owned = newValue {
                 quantity = 1
             }
         }
     }
-    var quantity = 1 {
-        willSet {
-            if newValue == 0 {
-                selectedStatus = .unowned
-            }
-        }
-    }
+    var quantity = 0
     
-    init(card: Card, group: Group, category: Category) {
+    init(card: Card, group: Group, category: Category, userCard: UserCard?) {
         self.card = card
         self.group = group
         self.category = category
+        self.userCard = userCard
+        
+        if let userCard {
+            selectedStatus = userCard.cardStatus
+            quantity = userCard.quantity
+            print(selectedStatus)
+        }
     }
-}
-
-// Relate a model class to static data (ex. enum) https://developer.apple.com/documentation/swiftdata/defining-data-relationships-with-enumerations-and-model-classes#Relate-a-model-class-to-static-data
-enum CardStatus: String, CaseIterable, Identifiable, Codable {
-    case owned, unowned, wishlist
-    var id: Self { self }
 }

@@ -13,12 +13,12 @@ struct CardCell: View {
     var isShowingPrice: Bool
     var isShowingRarity: Bool
     var isShowingMissing: Bool
+    var isWishlist: Bool
     var isOwned: Bool
     
     var height: CGFloat {
         width * (280 / 200)
     }
-    
     
     var body: some View {
         CardImage(imageUrl: card.imageUrl, width: width)
@@ -58,14 +58,21 @@ struct CardCell: View {
                 }
                 .padding(4)
             }
+            .overlay(alignment: .topLeading) {
+                if isWishlist {
+                    Image(systemName: "bookmark.fill")
+                        .foregroundStyle(.yellow)
+                        .padding(4)
+                }
+            }
     }
 }
 
 #Preview {
     HStack {
-        CardCell(card: Card.samples[0], width:  UIScreen.main.bounds.size.width * 0.3, isShowingPrice: true, isShowingRarity: true, isShowingMissing: true, isOwned: true)
+        CardCell(card: Card.samples[0], width:  UIScreen.main.bounds.size.width * 0.3, isShowingPrice: true, isShowingRarity: true, isShowingMissing: true, isWishlist: false, isOwned: true)
         
-        CardCell(card: Card.samples[0], width:  UIScreen.main.bounds.size.width * 0.3, isShowingPrice: true, isShowingRarity: true, isShowingMissing: true, isOwned: false)
+        CardCell(card: Card.samples[0], width:  UIScreen.main.bounds.size.width * 0.3, isShowingPrice: true, isShowingRarity: true, isShowingMissing: true, isWishlist: true, isOwned: false)
     }
     
 }

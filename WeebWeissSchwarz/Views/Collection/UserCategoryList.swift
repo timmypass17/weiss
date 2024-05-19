@@ -19,13 +19,9 @@ struct UserCategoryList: View {
         }
         .navigationTitle("My Collection")
         .navigationDestination(for: UserGroup.self) { group in
-//            CardListView(
-//                cardListViewModel:
-//                    CardListViewModel(
-//                        group: Group(id: group.id, name: group.name, abbreviation: "ABBRV", publishedOn: .now),
-//                        catgory: group.collection!.name),
-//                userGroup: group
-//            )
+            CardList(
+                group: Group(id: group.groupID, name: group.name, abbreviation: "", publishedOn: .now),
+                category: Category(categoryId: group.collection!.categoryID, name: group.collection!.name, modifiedOn: "", popularity: 0))
         }
     }
 }

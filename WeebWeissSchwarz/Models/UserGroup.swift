@@ -20,7 +20,8 @@ class UserGroup {
     
     var rarityCount: [RarityCount] {
         var rarityFreq: [Card.Rarity: Int] = [:]
-        for card in cards {
+        let ownedCards = cards.filter { $0.cardStatus == .owned }
+        for card in ownedCards {
             rarityFreq[card.rarity, default: 0] += 1
         }
         return rarityFreq.map { RarityCount(rarity: $0.key, count: $0.value) }.sorted(by: { $0.rarity < $1.rarity } )

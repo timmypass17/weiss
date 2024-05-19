@@ -12,20 +12,29 @@ import SwiftData
 class UserCard {
     @Attribute(.unique) var id: Int
     var imageUrl: String
-    var status: CardStatus
+    var cardStatus: CardStatus // note: enums doesn't work with predicate. store property as rawValue instead if needed
     var quantity: Int
     var rarity: Card.Rarity
-    
+
     var group: UserGroup? // TODO: maybe remove nil cause we have cascade delete, not nullify
     
     init(id: Int, imageUrl: String, status: CardStatus, quantity: Int, rarity: Card.Rarity, group: UserGroup? = nil) {
         self.id = id
         self.imageUrl = imageUrl
-        self.status = status
+        self.cardStatus = status
         self.quantity = quantity
         self.rarity = rarity
         self.group = group
     }
+}
+
+extension UserCard {
+    // Relate a model class to static data (ex. enum) https://developer.apple.com/documentation/swiftdata/defining-data-relationships-with-enumerations-and-model-classes#Relate-a-model-class-to-static-data
+    enum CardStatus: String, CaseIterable, Identifiable, Codable {
+        case owned, unowned, wishlist
+        var id: Self { self }
+    }
+
 }
 
 extension UserCard {
