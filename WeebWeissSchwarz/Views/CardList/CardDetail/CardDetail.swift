@@ -11,12 +11,11 @@ import SwiftData
 
 struct CardDetail: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(CardListViewModel.self) private var cardListViewModel: CardListViewModel
     @Environment(\.modelContext) private var modelContext // to save/update cards
     @State var cardDetailViewModel: CardDetailViewModel
     
-    init(card: Card) {
-        self._cardDetailViewModel = State(initialValue: CardDetailViewModel(card: card))
+    init(card: Card, group: Group, category: Category) {
+        self._cardDetailViewModel = State(initialValue: CardDetailViewModel(card: card, group: group, category: category))
     }
     
     var body: some View {
@@ -136,10 +135,10 @@ struct CardDetail: View {
         let userCategory: UserCategory
         let userGroup: UserGroup
         
-        if let existingCategory = fetchUserCategory(categoryID: cardListViewModel.category.categoryId) {
+        if let existingCategory = fetchUserCategory(categoryID: cardDetailViewModel.category.categoryId) {
             userCategory = existingCategory
         } else {
-            let collectionToAdd = UserCategory(categoryID: cardListViewModel.category.categoryId, name: cardListViewModel.category.name)
+            let collectionToAdd = UserCategory(categoryID: cardDetailViewModel.category.categoryId, name: cardDetailViewModel.category.name)
             userCategory = collectionToAdd
             modelContext.insert(userCategory)
         }
@@ -148,8 +147,8 @@ struct CardDetail: View {
             userGroup = existingUserGroup
         } else {
             let userGroupToAdd = UserGroup(
-                groupID: cardListViewModel.group.id,
-                name: cardListViewModel.group.name
+                groupID: cardDetailViewModel.group.id,
+                name: cardDetailViewModel.group.name
             )
             userGroup = userGroupToAdd
             userGroup.collection = userCategory   // need to set both relationships

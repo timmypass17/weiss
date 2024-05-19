@@ -11,12 +11,17 @@ import SwiftData
 struct CardListView: View {
     @State var cardListViewModel: CardListViewModel
     let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
-    var userGroup: UserGroup?
-
+    @Query var userCards: [UserCard]
+    
     // SwiftUI EnvironmentObject not available in View initializer. It is injected after object initialiazation.
-    init(group: Group, category: Category, userGroup: UserGroup? = nil) {
+    init(group: Group, category: Category/*, userGroup: UserGroup? = nil*/) {
         self._cardListViewModel = State(initialValue: CardListViewModel(group: group, category: category))
-        self.userGroup = userGroup
+    
+        let groupID = group.id
+        let predicate = #Predicate<UserCard> { userCard in
+            userCard.group?.groupID == groupID
+        }
+        self._userCards = Query(filter: predicate)
     }
 
     var body: some View {
@@ -33,7 +38,7 @@ struct CardListView: View {
                                 isShowingPrice: cardListViewModel.isShowingPrice,
                                 isShowingRarity: cardListViewModel.isShowingRarity,
                                 isShowingMissing: cardListViewModel.isShowingMissing,
-                                isOwned: userGroup?.cards.contains(where: { $0.id == card.id }) ?? false
+                                isOwned: userCards.contains(where: { $0.id == card.id })
                             )
                         }
                         .buttonStyle(.plain)
@@ -64,8 +69,7 @@ struct CardListView: View {
             }
             .sheet(item: $cardListViewModel.selectedCard) { card in
                 NavigationStack {
-                    CardDetail(card: card)
-                        .environment(cardListViewModel)
+                    CardDetail(card: card, group: cardListViewModel.group, category: cardListViewModel.category)
                 }
             }
         }

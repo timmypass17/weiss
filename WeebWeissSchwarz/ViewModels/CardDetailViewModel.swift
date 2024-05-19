@@ -8,7 +8,9 @@
 import Foundation
 
 @Observable class CardDetailViewModel {
-    let card: Card
+    let card: Card // TODO: Maybe make card have reference to group, and group have reference to category
+    let group: Group
+    let category: Category
     var isExpandedInfo = true
     var isExpandedPrices = true
     var isExpandedAdditionalPrices = false
@@ -28,8 +30,10 @@ import Foundation
         }
     }
     
-    init(card: Card) {
+    init(card: Card, group: Group, category: Category) {
         self.card = card
+        self.group = group
+        self.category = category
     }
 }
 
