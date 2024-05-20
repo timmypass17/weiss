@@ -18,6 +18,14 @@ class UserGroup {
     
     var collection: UserCategory?
     
+    init(groupID: Int, name: String, cards: [UserCard] = []) {
+        self.groupID = groupID
+        self.name = name
+        self.cards = cards
+    }
+}
+
+extension UserGroup {
     var rarityCount: [RarityCount] {
         var rarityFreq: [Card.Rarity: Int] = [:]
         let ownedCards = cards.filter { $0.cardStatus == .owned }
@@ -27,10 +35,8 @@ class UserGroup {
         return rarityFreq.map { RarityCount(rarity: $0.key, count: $0.value) }.sorted(by: { $0.rarity < $1.rarity } )
     }
     
-    init(groupID: Int, name: String, cards: [UserCard] = []) {
-        self.groupID = groupID
-        self.name = name
-        self.cards = cards
+    var ownedCount: Int {
+        return cards.filter { $0.cardStatus == .owned }.count
     }
 }
 

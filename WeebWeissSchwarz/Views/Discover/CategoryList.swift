@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CategoryList: View {
-   @State var categoryListViewModel = CategoryListViewModel()
+    @State var categoryListViewModel = CategoryListViewModel()
     var userCategories: [UserCategory]
     
     var body: some View {
@@ -23,7 +23,7 @@ struct CategoryList: View {
         }
         .navigationTitle("Categories")
         .navigationDestination(for: Category.self) { category in
-            GroupList(category: category, userCategories: userCategories)
+            GroupList(category: category, userCategory: userCategories.first { $0.categoryID == category.categoryId })
         }
     }
 }

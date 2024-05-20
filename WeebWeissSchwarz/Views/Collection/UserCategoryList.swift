@@ -21,7 +21,13 @@ struct UserCategoryList: View {
         .navigationDestination(for: UserGroup.self) { group in
             CardList(
                 group: Group(id: group.groupID, name: group.name, abbreviation: "", publishedOn: .now),
-                category: Category(categoryId: group.collection!.categoryID, name: group.collection!.name, modifiedOn: "", popularity: 0))
+                category: Category(categoryId: group.collection!.categoryID, name: group.collection!.name, modifiedOn: "", popularity: 0),
+                userGroup: userCategories
+                    .first { $0.categoryID == group.collection?.categoryID }?.groups
+                    .first { $0.groupID == group.groupID }
+            )
+            
+            
         }
     }
 }

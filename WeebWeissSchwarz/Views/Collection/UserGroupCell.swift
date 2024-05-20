@@ -10,10 +10,6 @@ import SwiftUI
 struct UserGroupCell: View {
     var group: UserGroup
     
-    var ownedCount: Int {
-        return group.cards.filter { $0.cardStatus == .owned }.count
-    }
-    
     var body: some View {
         VStack(spacing: 4) {
             HStack {
@@ -28,7 +24,7 @@ struct UserGroupCell: View {
             }
             
             HStack {
-                Text("\(ownedCount) / 100")
+                Text("\(group.ownedCount) / 100")
                     .foregroundStyle(.secondary)
                     .font(.caption)
                 ProgressView(value: Float(group.cards.count) / 100)

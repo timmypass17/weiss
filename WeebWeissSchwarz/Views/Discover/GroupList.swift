@@ -11,11 +11,11 @@ import SwiftData
 struct GroupList: View {
     @State var groupListViewModel: GroupListViewModel
     @Environment(\.modelContext) private var modelContext
-    var userCategories: [UserCategory]
+    var userCategory: UserCategory?
     
-    init(category: Category, userCategories: [UserCategory]) {
+    init(category: Category, userCategory: UserCategory?) {
         self._groupListViewModel = State(initialValue: GroupListViewModel(category: category))
-        self.userCategories = userCategories
+        self.userCategory = userCategory
     }
     
     var body: some View {
@@ -26,10 +26,7 @@ struct GroupList: View {
                     NavigationLink(value: group) {
                         GroupCell(
                             group: group,
-                            userGroup: userCategories
-                                .first(where: { $0.name == "Weiss Schwarz"})?
-                                .groups.first(where: { $0.groupID == group.id })
-                            
+                            userGroup: userCategory?.groups.first(where: { $0.groupID == group.id })
                         )
                     }
                 }
@@ -38,7 +35,8 @@ struct GroupList: View {
         .navigationDestination(for: Group.self) { group in
             CardList(
                 group: group,
-                category: groupListViewModel.category
+                category: groupListViewModel.category,
+                userGroup: userCategory?.groups.first { $0.groupID == group.id }
             )
         }
         .navigationTitle("Discover Sets")
