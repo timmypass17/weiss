@@ -14,8 +14,9 @@ struct ProductResponse: Decodable {
 }
 
 struct Card {
-    var id: Int
-    var groupId: Int
+    var productID: Int
+    var groupID: Int
+    // cateogryId?
     var name: String
     var imageUrl: String
     var price: Price?
@@ -124,6 +125,16 @@ struct Card {
     }
 }
 
+extension Card: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case productID = "productId"
+        case groupID = "groupId"
+        case name
+        case imageUrl
+        case extendedData
+    }
+}
+
 struct ExtendedData: Decodable {
     var id = UUID()
     var name: String
@@ -147,23 +158,16 @@ extension ExtendedData: Identifiable {
     }
 }
 
-extension Card: Decodable {
-    enum CodingKeys: String, CodingKey {
-        case id = "productId"
-        case groupId
-        case name
-        case imageUrl
-        case extendedData
-    }
-}
 
-extension Card: Identifiable {}
+extension Card: Identifiable {
+    var id: Int { productID }
+}
 
 extension Card {
     static let samples: [Card] = [
         Card(
-            id: 534213,
-            groupId: 23307,
+            productID: 534213,
+            groupID: 23307,
             name: "Blood Fiend, Power (SP)",
             imageUrl: "https://tcgplayer-cdn.tcgplayer.com/product/534213_200w.jpg",
             price: Price(productId: 534213, lowPrice: 117.76, midPrice: 130.00, highPrice: 188.88, marketPrice: 131.15),

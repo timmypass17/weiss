@@ -28,7 +28,7 @@ struct GroupCell: View {
                 Text("\(userGroup?.ownedCount ?? 0) / 100")
                     .foregroundStyle(.secondary)
                     .font(.caption)
-                ProgressView(value: Double(userGroup?.cards.count ?? 0) / 100)
+                ProgressView(value: Double(userGroup?.ownedCount ?? 0) / 100)
             }
         }
     }

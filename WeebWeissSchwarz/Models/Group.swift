@@ -12,8 +12,8 @@ struct GroupResponse: Decodable {
     let results: [Group]
 }
 
-struct Group: Identifiable {
-    var id: Int
+struct Group {
+    var groupID: Int
     var name: String
     var abbreviation: String
     var publishedOn: Date
@@ -21,9 +21,13 @@ struct Group: Identifiable {
 
 extension Group: Hashable {}
 
+extension Group: Identifiable {
+    var id: Int { groupID }
+}
+
 extension Group: Decodable {
     enum CodingKeys: String, CodingKey {
-        case id = "groupId"
+        case groupID = "groupId"
         case name
         case abbreviation
         case publishedOn
@@ -31,7 +35,7 @@ extension Group: Decodable {
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = try container.decode(Int.self, forKey: .id)
+        self.groupID = try container.decode(Int.self, forKey: .groupID)
         self.name = try container.decode(String.self, forKey: .name)
         self.abbreviation = try container.decode(String.self, forKey: .abbreviation)
         let publishedDateString = try container.decode(String.self, forKey: .publishedOn)
@@ -51,9 +55,9 @@ extension Group: Decodable {
 
 extension Group {
     static let sample: [Group] = [
-        Group(id: 23307, name: "Chainsaw Man", abbreviation: "CSM", publishedOn: .now),
-        Group(id: 23508, name: "JoJo's Bizarre Adventure: Stardust Crusaders Premium Booster", abbreviation: "JJ", publishedOn: .now),
-        Group(id: 23507, name: "[OSHI NO KO]", abbreviation: "OSK", publishedOn: .now)
+        Group(groupID: 23307, name: "Chainsaw Man", abbreviation: "CSM", publishedOn: .now),
+        Group(groupID: 23508, name: "JoJo's Bizarre Adventure: Stardust Crusaders Premium Booster", abbreviation: "JJ", publishedOn: .now),
+        Group(groupID: 23507, name: "[OSHI NO KO]", abbreviation: "OSK", publishedOn: .now)
     ]
 }
 

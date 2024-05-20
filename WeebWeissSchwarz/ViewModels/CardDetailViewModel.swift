@@ -11,7 +11,7 @@ import Foundation
     let card: Card // TODO: Maybe make card have reference to group, and group have reference to category
     let group: Group
     let category: Category
-    let userCard: UserCard?
+    var userCard: UserCard?
     var isExpandedInfo = true
     var isExpandedPrices = true
     var isExpandedAdditionalPrices = false
@@ -32,9 +32,9 @@ import Foundation
         self.userCard = userCard
         
         if let userCard {
+            print("Has card")
             selectedStatus = userCard.cardStatus
             quantity = userCard.quantity
-            print(selectedStatus)
         }
     }
 }

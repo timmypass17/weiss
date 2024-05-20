@@ -180,13 +180,13 @@
 		326EE8A12BEEB20900F55A6E /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				326EE8A22BEEB21200F55A6E /* Group.swift */,
 				326EE8BA2BF035A200F55A6E /* Card.swift */,
+				322CEDD62BF991F3004405A3 /* Category.swift */,
+				326EE8A22BEEB21200F55A6E /* Group.swift */,
 				326EE8C22BF2857C00F55A6E /* Price.swift */,
-				326EE8D72BF81B5100F55A6E /* UserGroup.swift */,
 				326EE8D92BF81B7300F55A6E /* UserCard.swift */,
 				326EE8DB2BF81EAA00F55A6E /* UserCategory.swift */,
-				322CEDD62BF991F3004405A3 /* Category.swift */,
+				326EE8D72BF81B5100F55A6E /* UserGroup.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";

@@ -26,7 +26,7 @@ struct GroupList: View {
                     NavigationLink(value: group) {
                         GroupCell(
                             group: group,
-                            userGroup: userCategory?.groups.first(where: { $0.groupID == group.id })
+                            userGroup: userCategory?.userGroups.first(where: { $0.groupID == group.id })
                         )
                     }
                 }
@@ -36,7 +36,7 @@ struct GroupList: View {
             CardList(
                 group: group,
                 category: groupListViewModel.category,
-                userGroup: userCategory?.groups.first { $0.groupID == group.id }
+                userGroup: userCategory?.userGroups.first { $0.groupID == group.id }
             )
         }
         .navigationTitle("Discover Sets")

@@ -20,10 +20,10 @@ struct UserCategoryList: View {
         .navigationTitle("My Collection")
         .navigationDestination(for: UserGroup.self) { group in
             CardList(
-                group: Group(id: group.groupID, name: group.name, abbreviation: "", publishedOn: .now),
-                category: Category(categoryId: group.collection!.categoryID, name: group.collection!.name, modifiedOn: "", popularity: 0),
+                group: Group(groupID: group.groupID, name: group.name, abbreviation: "", publishedOn: .now),
+                category: Category(categoryID: group.userCategory!.categoryID, name: group.userCategory!.name, modifiedOn: "", popularity: 0),
                 userGroup: userCategories
-                    .first { $0.categoryID == group.collection?.categoryID }?.groups
+                    .first { $0.categoryID == group.userCategory?.categoryID }?.userGroups
                     .first { $0.groupID == group.groupID }
             )
             

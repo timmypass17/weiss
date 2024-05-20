@@ -13,19 +13,19 @@ class UserCategory {
     @Attribute(.unique) var categoryID: Int
     var name: String
     
-    @Relationship(deleteRule: .cascade, inverse: \UserGroup.collection)
-    var groups: [UserGroup] = []
+    @Relationship(deleteRule: .cascade, inverse: \UserGroup.userCategory)
+    var userGroups: [UserGroup] = []
     
-    init(categoryID: Int, name: String, groups: [UserGroup] = []) {
+    init(categoryID: Int, name: String, userGroups: [UserGroup] = []) {
         self.categoryID = categoryID
         self.name = name
-        self.groups = groups
+        self.userGroups = userGroups
     }
 }
 
 extension UserCategory {
     static let samples: [UserCategory] = [
-        UserCategory(categoryID: 20, name: "Weiss Schwarz", groups: UserGroup.samples),
+        UserCategory(categoryID: 20, name: "Weiss Schwarz", userGroups: UserGroup.samples),
         UserCategory(categoryID: 68, name: "One Piece")
     ]
 }

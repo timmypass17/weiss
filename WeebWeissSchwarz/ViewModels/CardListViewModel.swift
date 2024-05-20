@@ -36,12 +36,12 @@ import Foundation
         self.category = category
         Task {
             do {
-                let products: [Card] = try await service.getProducts(categoryID: category.categoryId, groupID: group.id)
-                print("[CardListViewModel] getProducts(\(group.id)) -> Count: \(products.count)")
+                let products: [Card] = try await service.getProducts(categoryID: category.categoryID, groupID: group.groupID)
+                print("[CardListViewModel] getProducts(\(group.groupID)) -> Count: \(products.count)")
                 cards_ = products.filter { $0.isCard }
                 cards = cards_
             } catch {
-                print("Error getting products \(group.id): \(error)")
+                print("Error getting products \(group.groupID): \(error)")
             }
         }
     }

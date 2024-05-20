@@ -14,21 +14,21 @@ class UserGroup {
     var name: String
     
     @Relationship(deleteRule: .cascade, inverse: \UserCard.group)   // .cascade = delete group -> deletes cards
-    var cards: [UserCard] = []
+    var userCards: [UserCard] = []
     
-    var collection: UserCategory?
+    var userCategory: UserCategory?
     
-    init(groupID: Int, name: String, cards: [UserCard] = []) {
+    init(groupID: Int, name: String, userCards: [UserCard] = []) {
         self.groupID = groupID
         self.name = name
-        self.cards = cards
+        self.userCards = userCards
     }
 }
 
 extension UserGroup {
     var rarityCount: [RarityCount] {
         var rarityFreq: [Card.Rarity: Int] = [:]
-        let ownedCards = cards.filter { $0.cardStatus == .owned }
+        let ownedCards = userCards.filter { $0.cardStatus == .owned }
         for card in ownedCards {
             rarityFreq[card.rarity, default: 0] += 1
         }
@@ -36,13 +36,15 @@ extension UserGroup {
     }
     
     var ownedCount: Int {
-        return cards.filter { $0.cardStatus == .owned }.count
+        // note: modifying array's property doesn't recalculate. Inserting and deleting does.
+        print("Computing owned count")
+        return userCards.filter { $0.cardStatus == .owned }.count
     }
 }
 
 extension UserGroup {
     static let samples: [UserGroup] = [
-        UserGroup(groupID: 23307, name: "Chainsaw Man", cards: UserCard.samples),
+        UserGroup(groupID: 23307, name: "Chainsaw Man", userCards: UserCard.samples),
         UserGroup(groupID: 23249, name: "Spy x Family")
     ]
 }

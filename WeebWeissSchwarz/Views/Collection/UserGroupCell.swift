@@ -9,6 +9,7 @@ import SwiftUI
 
 struct UserGroupCell: View {
     var group: UserGroup
+    @Environment(\.modelContext) private var modelContext
     
     var body: some View {
         VStack(spacing: 4) {
@@ -27,7 +28,7 @@ struct UserGroupCell: View {
                 Text("\(group.ownedCount) / 100")
                     .foregroundStyle(.secondary)
                     .font(.caption)
-                ProgressView(value: Float(group.cards.count) / 100)
+                ProgressView(value: Float(group.ownedCount) / 100)
             }
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {

@@ -12,17 +12,11 @@ struct CardList: View {
     @State var cardListViewModel: CardListViewModel
     let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
     var userGroup: UserGroup?
-//    @Query var userCards: [UserCard]
     
     // SwiftUI EnvironmentObject not available in View initializer. It is injected after object initialiazation.
     init(group: Group, category: Category, userGroup: UserGroup?) {
         self._cardListViewModel = State(initialValue: CardListViewModel(group: group, category: category))
         self.userGroup = userGroup
-//        let groupID = group.id
-//        let predicate = #Predicate<UserCard> { userCard in
-//            userCard.group?.groupID == groupID
-//        }
-//        self._userCards = Query(filter: predicate)
     }
 
     var body: some View {
@@ -40,8 +34,8 @@ struct CardList: View {
                                 isShowingPrice: cardListViewModel.isShowingPrice,
                                 isShowingRarity: cardListViewModel.isShowingRarity,
                                 isShowingMissing: cardListViewModel.isShowingMissing,
-                                isWishlist: userGroup?.cards.contains { $0.id == card.id && $0.cardStatus == .wishlist } ?? false,
-                                isOwned: userGroup?.cards.contains { $0.id == card.id && $0.cardStatus == .owned } ?? false
+                                isWishlist: userGroup?.userCards.contains { $0.cardID == card.id && $0.cardStatus == .wishlist } ?? false,
+                                isOwned: userGroup?.userCards.contains { $0.cardID == card.id && $0.cardStatus == .owned } ?? false
                             )
                         }
                         .buttonStyle(.plain)
@@ -76,7 +70,7 @@ struct CardList: View {
                         card: card,
                         group: cardListViewModel.group,
                         category: cardListViewModel.category,
-                        userCard: userGroup?.cards.first { $0.id == card.id }
+                        userCard: userGroup?.userCards.first { $0.cardID == card.id }
                     )
                 }
             }

@@ -12,7 +12,7 @@ struct UserGroupList: View {
     
     var body: some View {
         Section(collection.name) {
-            ForEach(collection.groups.sorted { $0.name < $1.name }) { userGroup in
+            ForEach(collection.userGroups.sorted { $0.name < $1.name }) { userGroup in
                 NavigationLink(value: userGroup) {
                     UserGroupCell(group: userGroup)
                 }

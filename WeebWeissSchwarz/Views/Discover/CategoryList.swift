@@ -23,7 +23,7 @@ struct CategoryList: View {
         }
         .navigationTitle("Categories")
         .navigationDestination(for: Category.self) { category in
-            GroupList(category: category, userCategory: userCategories.first { $0.categoryID == category.categoryId })
+            GroupList(category: category, userCategory: userCategories.first { $0.categoryID == category.categoryID })
         }
     }
 }
