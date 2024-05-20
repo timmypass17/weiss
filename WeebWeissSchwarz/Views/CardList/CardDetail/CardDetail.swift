@@ -132,93 +132,109 @@ struct CardDetail: View {
     }
     
     func didTapSaveButton() {
-        switch cardDetailViewModel.selectedStatus {
-        case .owned:
-            print("Owned")
-            if let userCard = cardDetailViewModel.userCard {
-                print("Update card")
-                // Update card
-//                // TODO: Bug, updating array's values is not recomputing UserGroup.ownedCount (delete, then add does recompute)
-//                userCard.cardStatus = .owned
-//                userCard.quantity = cardDetailViewModel.quantity
-                
-                modelContext.delete(userCard)
-                if let index = userCard.group?.userCards.firstIndex(where: { $0.cardID == cardDetailViewModel.card.id }) {
-                    userCard.group?.userCards.remove(at: index)
-                }
-                addCard()
-            } else {
-                print("Add card")
-                addCard()
-            }
-        case .unowned:
-            print("Unowned")
-            // Delete existing card
-            if let userCard = cardDetailViewModel.userCard {
-                print("Delete card")
-                modelContext.delete(userCard)
-                // IMPORTANT: Also have to remove card reference aswell to update UI
-                if let index = userCard.group?.userCards.firstIndex(where: { $0.cardID == cardDetailViewModel.card.id }) {
-                    userCard.group?.userCards.remove(at: index)
-                }
-            }
-        case .wishlist:
-            print("Wishlist")
-            if let userCard = cardDetailViewModel.userCard {
-                print("Update")
-////                // Update card
-//                userCard.cardStatus = .wishlist
-//                userCard.quantity = 0
-                
-                modelContext.delete(userCard)
-                if let index = userCard.group?.userCards.firstIndex(where: { $0.cardID == cardDetailViewModel.card.id }) {
-                    userCard.group?.userCards.remove(at: index)
-                }
-                addCard()
-            } else {
-                print("Add card")
-                addCard()
-            }
-        }
+        addUpdateCard()
+//        switch cardDetailViewModel.selectedStatus {
+//        case .owned:
+//            print("Owned")
+//            if let userCard = cardDetailViewModel.userCard {
+//                print("Update card")
+//                // Update card
+//                modelContext.delete(userCard)
+//                if let index = userCard.group?.userCards.firstIndex(where: { $0.cardID == cardDetailViewModel.card.id }) {
+//                    userCard.group?.userCards.remove(at: index)
+//                }
+//                addCard()
+//            } else {
+//                print("Add card")
+//                addCard()
+//            }
+//        case .unowned:
+//            print("Unowned")
+//            // Delete existing card
+//            if let userCard = cardDetailViewModel.userCard {
+//                print("Delete card")
+//                modelContext.delete(userCard)
+//                // IMPORTANT: Also have to remove card reference aswell to update UI
+//                if let index = userCard.group?.userCards.firstIndex(where: { $0.cardID == cardDetailViewModel.card.id }) {
+//                    userCard.group?.userCards.remove(at: index)
+//                }
+//            }
+//        case .wishlist:
+//            print("Wishlist")
+//            if let userCard = cardDetailViewModel.userCard {
+//                print("Update")
+//                modelContext.delete(userCard)
+//                if let index = userCard.group?.userCards.firstIndex(where: { $0.cardID == cardDetailViewModel.card.id }) {
+//                    userCard.group?.userCards.remove(at: index)
+//                }
+//                addCard()
+//            } else {
+//                print("Add card")
+//                addCard()
+//            }
+//        }
     }
     
-    func addCard() {
-        let userCategory: UserCategory
-        let userGroup: UserGroup
-        
-        if let existingCategory = fetchUserCategory(categoryID: cardDetailViewModel.category.categoryID) {
-            userCategory = existingCategory
+    func addUpdateCard() {
+        if let userCard = cardDetailViewModel.userCard {
+            // assume category and group are created since existing card always belong
+            var userGroup = userCard.group! // keep reference to group before it gets deleted
+            if let index = userCard.group?.userCards.firstIndex(where: { $0.cardID == cardDetailViewModel.card.id }) {
+                print("Remove card: \(userCard.cardStatus)")
+                userGroup.userCards.remove(at: index) // also remove's userCard's reference to userGroup (userCard.group = nil)
+            }
+            
+            modelContext.delete(userCard)
+            
+            if userCard.cardStatus != .unowned {
+                print("Insert card: \(cardDetailViewModel.selectedStatus)")
+                let cardToAdd = UserCard(
+                    cardID: cardDetailViewModel.card.id,
+                    imageUrl: cardDetailViewModel.card.imageUrl,
+                    cardStatus: cardDetailViewModel.selectedStatus,
+                    quantity: cardDetailViewModel.quantity,
+                    rarity: cardDetailViewModel.card.rarity,
+                    group: userGroup
+                )
+                
+                userGroup.userCards.append(cardToAdd)
+                modelContext.insert(cardToAdd)
+            }
         } else {
-            let collectionToAdd = UserCategory(categoryID: cardDetailViewModel.category.categoryID, name: cardDetailViewModel.category.name)
-            userCategory = collectionToAdd
-            modelContext.insert(userCategory)
-        }
-        
-        if let existingUserGroup = fetchUserGroup(groupID: cardDetailViewModel.card.groupID) {
-            userGroup = existingUserGroup
-        } else {
-            let userGroupToAdd = UserGroup(
-                groupID: cardDetailViewModel.group.id,
-                name: cardDetailViewModel.group.name
+            print("Adding new card")
+            let userCategory: UserCategory
+            let userGroup: UserGroup
+    
+            if let existingCategory = fetchUserCategory(categoryID: cardDetailViewModel.category.categoryID) {
+                userCategory = existingCategory
+            } else {
+                let collectionToAdd = UserCategory(categoryID: cardDetailViewModel.category.categoryID, name: cardDetailViewModel.category.name)
+                userCategory = collectionToAdd
+                modelContext.insert(userCategory)
+            }
+            
+            if let existingUserGroup = fetchUserGroup(groupID: cardDetailViewModel.card.groupID) {
+                userGroup = existingUserGroup
+            } else {
+                let userGroupToAdd = UserGroup(groupID: cardDetailViewModel.group.id, name: cardDetailViewModel.group.name)
+                userGroup = userGroupToAdd
+                userGroup.userCategory = userCategory   // need to set both relationships
+                userCategory.userGroups.append(userGroup)
+                modelContext.insert(userGroup)
+            }
+    
+            let cardToAdd = UserCard(
+                cardID: cardDetailViewModel.card.id,
+                imageUrl: cardDetailViewModel.card.imageUrl,
+                cardStatus: cardDetailViewModel.selectedStatus,
+                quantity: cardDetailViewModel.quantity,
+                rarity: cardDetailViewModel.card.rarity,
+                group: userGroup
             )
-            userGroup = userGroupToAdd
-            userGroup.userCategory = userCategory   // need to set both relationships
-            userCategory.userGroups.append(userGroup)
-            modelContext.insert(userGroup)
+    
+            userGroup.userCards.append(cardToAdd)
+            modelContext.insert(cardToAdd)
         }
-        
-        let cardToAdd = UserCard(
-            cardID: cardDetailViewModel.card.id,
-            imageUrl: cardDetailViewModel.card.imageUrl,
-            cardStatus: cardDetailViewModel.selectedStatus,
-            quantity: cardDetailViewModel.quantity,
-            rarity: cardDetailViewModel.card.rarity,
-            group: userGroup
-        )
-        
-        
-        userGroup.userCards.append(cardToAdd)
-        modelContext.insert(cardToAdd)
         
     }
     

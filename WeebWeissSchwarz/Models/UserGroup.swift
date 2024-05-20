@@ -14,7 +14,7 @@ class UserGroup {
     var name: String
     
     @Relationship(deleteRule: .cascade, inverse: \UserCard.group)   // .cascade = delete group -> deletes cards
-    var userCards: [UserCard] = []
+    var userCards: [UserCard] = [] // note: deleting userCard from array also removes that card's group reference
     
     var userCategory: UserCategory?
     
