@@ -15,25 +15,39 @@ struct WeebWeissSchwarzApp: App {
         WindowGroup {
             WeissTab()
         }
-        .modelContainer(for: UserCard.self) // infers UserGroup, UserCollection as well
+        .modelContainer(for: UserCollection.self) // infers UserGroup, UserCollection...
     }
 }
 
 struct WeissTab: View {
-    @Query(sort: \UserCategory.name) var userCategories: [UserCategory]
+    @Query var userCollections: [UserCollection]
+    @Environment(\.modelContext) private var modelContext
+
+    var userCollection: UserCollection? {
+        return userCollections.first
+    }
     
     var body: some View {
         TabView {
             NavigationStack {
-                UserCategoryList(userCategories: userCategories)
+                UserCategoryList(userCategories: userCollection?.userCategories ?? [], removeUserCategory: removeUserCategory(_:))
             }
             .tabItem { Label("Collection", systemImage: "list.bullet") }
             
             NavigationStack {
-                CategoryList(userCategories: userCategories)
+                CategoryList(userCategories: userCollection?.userCategories ?? [])
             }
             .tabItem { Label("Discover", systemImage: "magnifyingglass") }
         }
+    }
+    
+    func removeUserCategory(_ userCategory: UserCategory) {
+        guard let index = userCollection?.userCategories.firstIndex(where: { $0.categoryID == userCategory.categoryID })
+        else { return }
+        
+        print("removeUserCategory")
+        userCollection?.userCategories.remove(at: index)
+        modelContext.delete(userCategory)
     }
 }
 

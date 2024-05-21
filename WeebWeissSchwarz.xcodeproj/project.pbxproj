@@ -11,6 +11,7 @@
 		322CEDD72BF991F3004405A3 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322CEDD62BF991F3004405A3 /* Category.swift */; };
 		322CEDD92BF9939C004405A3 /* CategoryList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322CEDD82BF9939C004405A3 /* CategoryList.swift */; };
 		322CEDDB2BF994B2004405A3 /* CategoryListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322CEDDA2BF994B2004405A3 /* CategoryListViewModel.swift */; };
+		322CEDDD2BFD1BC3004405A3 /* UserCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 322CEDDC2BFD1BC3004405A3 /* UserCollection.swift */; };
 		326EE88F2BEEADE900F55A6E /* WeebWeissSchwarzApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326EE88E2BEEADE900F55A6E /* WeebWeissSchwarzApp.swift */; };
 		326EE8952BEEADEC00F55A6E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 326EE8942BEEADEC00F55A6E /* Assets.xcassets */; };
 		326EE8982BEEADEC00F55A6E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 326EE8972BEEADEC00F55A6E /* Preview Assets.xcassets */; };
@@ -46,6 +47,7 @@
 		322CEDD62BF991F3004405A3 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		322CEDD82BF9939C004405A3 /* CategoryList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryList.swift; sourceTree = "<group>"; };
 		322CEDDA2BF994B2004405A3 /* CategoryListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListViewModel.swift; sourceTree = "<group>"; };
+		322CEDDC2BFD1BC3004405A3 /* UserCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCollection.swift; sourceTree = "<group>"; };
 		326EE88B2BEEADE900F55A6E /* WeebWeissSchwarz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeebWeissSchwarz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		326EE88E2BEEADE900F55A6E /* WeebWeissSchwarzApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeebWeissSchwarzApp.swift; sourceTree = "<group>"; };
 		326EE8942BEEADEC00F55A6E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -187,6 +189,7 @@
 				326EE8D92BF81B7300F55A6E /* UserCard.swift */,
 				326EE8DB2BF81EAA00F55A6E /* UserCategory.swift */,
 				326EE8D72BF81B5100F55A6E /* UserGroup.swift */,
+				322CEDDC2BFD1BC3004405A3 /* UserCollection.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -299,6 +302,7 @@
 				326EE8CB2BF2F56100F55A6E /* RightDetailCell.swift in Sources */,
 				326EE8B72BF0351B00F55A6E /* CardListViewModel.swift in Sources */,
 				326EE8BD2BF03D6400F55A6E /* ProductAPIRequest.swift in Sources */,
+				322CEDDD2BFD1BC3004405A3 /* UserCollection.swift in Sources */,
 				322CEDDB2BF994B2004405A3 /* CategoryListViewModel.swift in Sources */,
 				326EE8AE2BEEB75F00F55A6E /* WeissSchwarzService.swift in Sources */,
 				326EE8A32BEEB21200F55A6E /* Group.swift in Sources */,

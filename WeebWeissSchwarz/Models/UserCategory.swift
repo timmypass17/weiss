@@ -16,6 +16,8 @@ class UserCategory {
     @Relationship(deleteRule: .cascade, inverse: \UserGroup.userCategory)
     var userGroups: [UserGroup] = []
     
+    var userCollection: UserCollection?
+    
     init(categoryID: Int, name: String, userGroups: [UserGroup] = []) {
         self.categoryID = categoryID
         self.name = name

@@ -10,11 +10,12 @@ import SwiftData
 
 struct UserCategoryList: View {
     var userCategories: [UserCategory]
-    
+    var removeUserCategory: (UserCategory) -> Void
+
     var body: some View {
         List {
-            ForEach(userCategories) { collection in
-                UserGroupList(collection: collection)
+            ForEach(userCategories) { userCategory in
+                UserGroupList(userCategory: userCategory, removeUserCategory: removeUserCategory)
             }
         }
         .navigationTitle("My Collection")
@@ -26,15 +27,14 @@ struct UserCategoryList: View {
                     .first { $0.categoryID == group.userCategory?.categoryID }?.userGroups
                     .first { $0.groupID == group.groupID }
             )
-            
-            
         }
+        // TODO: Test swipe to delete group (ex. Chainsaw Man)
     }
 }
 
-//#Preview {
-//    NavigationStack {
-//        UserCategoryList()
-//            .modelContainer(previewContainer)
-//    }
-//}
+#Preview {
+    NavigationStack {
+        UserCategoryList(userCategories: UserCollection.sample.userCategories, removeUserCategory: { _ in })
+            .modelContainer(previewContainer)
+    }
+}

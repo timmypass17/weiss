@@ -132,6 +132,7 @@ struct CardDetail: View {
     }
     
     func didTapSaveButton() {
+        // Existing card
         if let userCard = cardDetailViewModel.userCard {
             if cardDetailViewModel.selectedStatus == .unowned {
                 removeCard(userCard: userCard)
@@ -139,6 +140,7 @@ struct CardDetail: View {
                 updateCard(userCard: userCard)
             }
         } else {
+            // New card
             addCard()
         }
 
@@ -151,37 +153,63 @@ struct CardDetail: View {
     }
     
     func removeCard(userCard: UserCard) {
-        guard let userGroup = userCard.group else { return }
-        if let index = userGroup.userCards.firstIndex(where: { $0.cardID == cardDetailViewModel.card.id }) {
+        guard let userGroup = userCard.group,
+              let userCategory = userGroup.userCategory,
+              let userCollection = userCategory.userCollection
+        else { return }
+        
+        if let userCardIndex = userGroup.userCards.firstIndex(where: { $0.cardID == userCard.cardID }) {
             print("Remove card: \(userCard.cardStatus)")
-            userGroup.userCards.remove(at: index) // note: also remove's userCard's reference to userGroup (userCard.group = nil)
+            userGroup.userCards.remove(at: userCardIndex) // note: also remove's userCard's reference to userGroup (userCard.group = nil)
+            modelContext.delete(userCard)
         }
         
-        modelContext.delete(userCard)
+//        // Bug somewhere down here
+//        if userGroup.userCards.isEmpty {
+//            if let userGroupIndex = userCategory.userGroups.firstIndex(where: { $0.groupID == userGroup.groupID }) {
+//                let userGroupToRemove = userCategory.userGroups.remove(at: userGroupIndex)
+//                modelContext.delete(userGroupToRemove)
+//                print("Delete group: \(userGroup.groupID)")
+//            }
+//        }
+        
+//        if userCategory.userGroups.isEmpty {
+//            if let userCategoryIndex = userCollection.userCategories.firstIndex(where: { $0.categoryID == userCategory.categoryID }) {
+//                print("Delete category: \(userCategory.categoryID)")
+//                userCollection.userCategories.remove(at: userCategoryIndex)
+//                modelContext.delete(userCategory)
+//            }
+//        }
     }
     
     func addCard() {
         let userCategory: UserCategory
         let userGroup: UserGroup
-
-        if let existingCategory = fetchUserCategory(categoryID: cardDetailViewModel.category.categoryID) {
+        
+        // TODO: Fetching is redundant, we could pass userCollection all the way down to card detail maybe
+        let userCollection = fetchUserCollection()
+        
+        if let existingCategory = userCollection.userCategories.first(where: { $0.categoryID == cardDetailViewModel.category.categoryID }) {
             print("Fetched category")
             userCategory = existingCategory
         } else {
-            print("Create category")
-            let collectionToAdd = UserCategory(categoryID: cardDetailViewModel.category.categoryID, name: cardDetailViewModel.category.name)
-            userCategory = collectionToAdd
+            print("Create category: \(cardDetailViewModel.category.categoryID)")
+            let userCategoryToAdd = UserCategory(categoryID: cardDetailViewModel.category.categoryID, name: cardDetailViewModel.category.name)
+            userCategory = userCategoryToAdd
+            userCategory.userCollection = userCollection
+            userCollection.userCategories.append(userCategoryToAdd)
             modelContext.insert(userCategory)
         }
         
         if let existingUserGroup = userCategory.userGroups.first(where: { $0.groupID == cardDetailViewModel.group.groupID }) {
-            print("Found group")
+            print("Found group: \(existingUserGroup.userCategory?.categoryID)")
             userGroup = existingUserGroup
         } else {
-            print("Create group")
+            print("Create group: \(cardDetailViewModel.group.id)")
             let userGroupToAdd = UserGroup(groupID: cardDetailViewModel.group.id, name: cardDetailViewModel.group.name)
             userGroup = userGroupToAdd
             userGroup.userCategory = userCategory   // need to set both relationships
+            print("UserGroup's category: \(userGroup.userCategory?.categoryID)")
             userCategory.userGroups.append(userGroup)
             modelContext.insert(userGroup)
         }
@@ -192,26 +220,31 @@ struct CardDetail: View {
             imageUrl: cardDetailViewModel.card.imageUrl,
             cardStatus: cardDetailViewModel.selectedStatus,
             quantity: cardDetailViewModel.quantity,
-            rarity: cardDetailViewModel.card.rarity,
-            group: userGroup
+            rarity: cardDetailViewModel.card.rarity
         )
-
+        
         userGroup.userCards.append(cardToAdd)
+        cardToAdd.group = userGroup
         modelContext.insert(cardToAdd)
     }
 
-    func fetchUserCategory(categoryID: Int) -> UserCategory? {
+    func fetchUserCollection() -> UserCollection {
         do {
-            let groupPredicate = #Predicate<UserCategory> {
-                $0.categoryID == categoryID
-            }
-            var descriptor = FetchDescriptor(predicate: groupPredicate)
+            var descriptor = FetchDescriptor<UserCollection>()
             descriptor.fetchLimit =  1
-            let collection: [UserCategory] = try modelContext.fetch(descriptor)
-            return collection.first
+            let collections: [UserCollection] = try modelContext.fetch(descriptor)
+            if let collection = collections.first {
+                return collection
+            } else {
+                let userCollection = UserCollection()
+                modelContext.insert(userCollection)
+                return userCollection
+            }
         } catch {
-            print("Error fetching collection \(categoryID): \(error)")
-            return nil
+            print("Error fetching user collection: \(error)")
+            let userCollection = UserCollection()
+            modelContext.insert(userCollection)
+            return userCollection
         }
     }
 }
