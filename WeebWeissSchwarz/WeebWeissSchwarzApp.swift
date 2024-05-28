@@ -24,6 +24,7 @@ struct WeissTab: View {
     @Environment(\.modelContext) private var modelContext
 
     var userCollection: UserCollection? {
+        print("Did set userCollection")
         return userCollections.first
     }
     

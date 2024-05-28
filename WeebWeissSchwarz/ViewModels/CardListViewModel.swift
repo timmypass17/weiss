@@ -32,12 +32,12 @@ import Foundation
     
     let group: Group
     let category: Category
-//    var userGroup: UserGroup?
+    var userGroup: UserGroup?
     
-    init(group: Group, category: Category/*, userGroup: UserGroup?*/) {
+    init(group: Group, category: Category, userGroup: UserGroup?) {
         self.group = group
         self.category = category
-//        self.userGroup = userGroup
+        self.userGroup = userGroup
 
         Task {
             do {

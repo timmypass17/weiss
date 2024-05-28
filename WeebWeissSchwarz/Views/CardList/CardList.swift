@@ -11,12 +11,11 @@ import SwiftData
 struct CardList: View {
     @State var cardListViewModel: CardListViewModel
     let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
-    var userGroup: UserGroup?   // don't put this in viewmodel cause it wont update from (@Query var userCollections: [UserCollection]) within viewmodel
     
     // SwiftUI EnvironmentObject not available in View initializer. It is injected after object initialiazation.
     init(group: Group, category: Category, userGroup: UserGroup?) {
-        self._cardListViewModel = State(initialValue: CardListViewModel(group: group, category: category))
-        self.userGroup = userGroup
+        print("CardList init()")
+        self._cardListViewModel = State(initialValue: CardListViewModel(group: group, category: category, userGroup: userGroup))
     }
 
     var body: some View {
@@ -34,8 +33,8 @@ struct CardList: View {
                                 isShowingPrice: cardListViewModel.isShowingPrice,
                                 isShowingRarity: cardListViewModel.isShowingRarity,
                                 isShowingMissing: cardListViewModel.isShowingMissing,
-                                isWishlist: userGroup?.userCards.contains { $0.cardID == card.id && $0.cardStatus == .wishlist } ?? false,
-                                isOwned: userGroup?.userCards.contains { $0.cardID == card.id && $0.cardStatus == .owned } ?? false
+                                isWishlist: cardListViewModel.userGroup?.userCards.contains { $0.cardID == card.id && $0.cardStatus == .wishlist } ?? false,
+                                isOwned: cardListViewModel.userGroup?.userCards.contains { $0.cardID == card.id && $0.cardStatus == .owned } ?? false
                             )
                         }
                         .buttonStyle(.plain)
@@ -74,13 +73,14 @@ struct CardList: View {
                         card: card,
                         group: cardListViewModel.group,
                         category: cardListViewModel.category,
-                        userCard: userGroup?.userCards.first { $0.cardID == card.id }
+                        userCard: cardListViewModel.userGroup?.userCards.first { $0.cardID == card.id }
                     )
+                    .environment(cardListViewModel)
                 }
             }
             .sheet(isPresented: $cardListViewModel.isPresentingInfoSheet) {
                 NavigationStack {
-                    InformationView(cardListViewModel: cardListViewModel, userGroup: userGroup)
+                    InformationView(cardListViewModel: cardListViewModel, userGroup: cardListViewModel.userGroup)
                     
                 }
             }

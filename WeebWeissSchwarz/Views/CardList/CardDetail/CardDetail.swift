@@ -10,6 +10,7 @@ import Charts
 import SwiftData
 
 struct CardDetail: View {
+    @Environment(CardListViewModel.self) private var cardListViewModel
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext // to save/update cards
     @State var cardDetailViewModel: CardDetailViewModel
@@ -163,30 +164,12 @@ struct CardDetail: View {
             userGroup.userCards.remove(at: userCardIndex) // note: also remove's userCard's reference to userGroup (userCard.group = nil)
             modelContext.delete(userCard)
         }
-        
-//        // Bug somewhere down here
-//        if userGroup.userCards.isEmpty {
-//            if let userGroupIndex = userCategory.userGroups.firstIndex(where: { $0.groupID == userGroup.groupID }) {
-//                let userGroupToRemove = userCategory.userGroups.remove(at: userGroupIndex)
-//                modelContext.delete(userGroupToRemove)
-//                print("Delete group: \(userGroup.groupID)")
-//            }
-//        }
-        
-//        if userCategory.userGroups.isEmpty {
-//            if let userCategoryIndex = userCollection.userCategories.firstIndex(where: { $0.categoryID == userCategory.categoryID }) {
-//                print("Delete category: \(userCategory.categoryID)")
-//                userCollection.userCategories.remove(at: userCategoryIndex)
-//                modelContext.delete(userCategory)
-//            }
-//        }
     }
     
     func addCard() {
         let userCategory: UserCategory
         let userGroup: UserGroup
         
-        // TODO: Fetching is redundant, we could pass userCollection all the way down to card detail maybe
         let userCollection = fetchUserCollection()
         
         if let existingCategory = userCollection.userCategories.first(where: { $0.categoryID == cardDetailViewModel.category.categoryID }) {
@@ -208,9 +191,10 @@ struct CardDetail: View {
             print("Create group: \(cardDetailViewModel.group.id)")
             let userGroupToAdd = UserGroup(groupID: cardDetailViewModel.group.id, name: cardDetailViewModel.group.name, abbreviation: cardDetailViewModel.group.abbreviation)
             userGroup = userGroupToAdd
-            userGroup.userCategory = userCategory   // need to set both relationships
-            userCategory.userGroups.append(userGroup)
+            userGroup.userCategory = userCategory     // need to set both relationships
+            userCategory.userGroups.append(userGroup) // this to update UI
             modelContext.insert(userGroup)
+            cardListViewModel.userGroup = userGroup // set userGroup in vm
         }
         
         print("Add Card")
@@ -225,7 +209,6 @@ struct CardDetail: View {
         userGroup.userCards.append(cardToAdd)
         cardToAdd.group = userGroup
         modelContext.insert(cardToAdd)
-        
     }
 
     func fetchUserCollection() -> UserCollection {
