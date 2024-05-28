@@ -45,7 +45,6 @@ struct WeissTab: View {
         guard let index = userCollection?.userCategories.firstIndex(where: { $0.categoryID == userCategory.categoryID })
         else { return }
         
-        print("removeUserCategory")
         userCollection?.userCategories.remove(at: index)
         modelContext.delete(userCategory)
     }

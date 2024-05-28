@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct UserGroupCell: View {
-    var group: UserGroup
+    var userGroup: UserGroup
     @Environment(\.modelContext) private var modelContext
     
     var body: some View {
         VStack(spacing: 4) {
             HStack {
-                Text(group.name)
+                Text(userGroup.name)
                     .lineLimit(1)
                 
                 Spacer()
@@ -25,15 +25,17 @@ struct UserGroupCell: View {
             }
             
             HStack {
-                Text("\(group.ownedCount) / 100")
+                Text("\(userGroup.ownedCount) / 100")
                     .foregroundStyle(.secondary)
                     .font(.caption)
-                ProgressView(value: Float(group.ownedCount) / 100)
+                ProgressView(value: Float(userGroup.ownedCount) / 100)
             }
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
-                    ForEach(group.rarityCount) {
-                        RarityTagView(amount: $0.count, rarity: $0.rarity)
+                    ForEach(userGroup.rarityCount
+                        .map { RarityCount(rarity: $0.key, count: $0.value) }
+                        .sorted(by: { $0.rarity < $1.rarity } )) {
+                        RarityCountTagView(amount: $0.count, rarity: $0.rarity)
                     }
                 }
             }

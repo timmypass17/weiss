@@ -20,20 +20,25 @@ import Foundation
             updateProducts()
         }
     }
-    var isShowingPrice: Bool = true
-    var isShowingRarity: Bool = true
-    var isShowingMissing: Bool = true
+    var isShowingPrice = true
+    var isShowingRarity = true
+    var isShowingMissing = true
     var selectedCard: Card? = nil
+    var isPresentingInfoSheet = false
+    
     @ObservationIgnored
     var cards_: [Card] = []
     let service = WeissSchwarzService()
     
     let group: Group
     let category: Category
+//    var userGroup: UserGroup?
     
-    init(group: Group, category: Category) {
+    init(group: Group, category: Category/*, userGroup: UserGroup?*/) {
         self.group = group
         self.category = category
+//        self.userGroup = userGroup
+
         Task {
             do {
                 let products: [Card] = try await service.getProducts(categoryID: category.categoryID, groupID: group.groupID)

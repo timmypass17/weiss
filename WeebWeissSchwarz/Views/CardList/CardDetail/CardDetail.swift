@@ -206,10 +206,9 @@ struct CardDetail: View {
             userGroup = existingUserGroup
         } else {
             print("Create group: \(cardDetailViewModel.group.id)")
-            let userGroupToAdd = UserGroup(groupID: cardDetailViewModel.group.id, name: cardDetailViewModel.group.name)
+            let userGroupToAdd = UserGroup(groupID: cardDetailViewModel.group.id, name: cardDetailViewModel.group.name, abbreviation: cardDetailViewModel.group.abbreviation)
             userGroup = userGroupToAdd
             userGroup.userCategory = userCategory   // need to set both relationships
-            print("UserGroup's category: \(userGroup.userCategory?.categoryID)")
             userCategory.userGroups.append(userGroup)
             modelContext.insert(userGroup)
         }
@@ -226,6 +225,7 @@ struct CardDetail: View {
         userGroup.userCards.append(cardToAdd)
         cardToAdd.group = userGroup
         modelContext.insert(cardToAdd)
+        
     }
 
     func fetchUserCollection() -> UserCollection {

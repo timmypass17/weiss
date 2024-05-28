@@ -19,16 +19,15 @@ struct UserCategoryList: View {
             }
         }
         .navigationTitle("My Collection")
-        .navigationDestination(for: UserGroup.self) { group in
+        .navigationDestination(for: UserGroup.self) { userGroup in
             CardList(
-                group: Group(groupID: group.groupID, name: group.name, abbreviation: "", publishedOn: .now),
-                category: Category(categoryID: group.userCategory!.categoryID, name: group.userCategory!.name, modifiedOn: "", popularity: 0),
+                group: Group(groupID: userGroup.groupID, name: userGroup.name, abbreviation: userGroup.abbreviation, publishedOn: .now),
+                category: Category(categoryID: userGroup.userCategory!.categoryID, name: userGroup.userCategory!.name, modifiedOn: "", popularity: 0),
                 userGroup: userCategories
-                    .first { $0.categoryID == group.userCategory?.categoryID }?.userGroups
-                    .first { $0.groupID == group.groupID }
+                    .first { $0.categoryID == userGroup.userCategory?.categoryID }?.userGroups
+                    .first { $0.groupID == userGroup.groupID }
             )
         }
-        // TODO: Test swipe to delete group (ex. Chainsaw Man)
     }
 }
 

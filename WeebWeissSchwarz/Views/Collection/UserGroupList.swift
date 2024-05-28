@@ -16,7 +16,7 @@ struct UserGroupList: View {
         Section(userCategory.name) {
             ForEach(userCategory.userGroups.sorted { $0.name < $1.name }) { userGroup in
                 NavigationLink(value: userGroup) {
-                    UserGroupCell(group: userGroup)
+                    UserGroupCell(userGroup: userGroup)
                 }
                 .swipeActions(edge: .trailing) {
                     Button(role: .destructive) {

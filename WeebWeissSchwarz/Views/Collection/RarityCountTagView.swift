@@ -23,7 +23,7 @@ struct TagView: View {
     }
 }
 
-struct RarityTagView: View {
+struct RarityCountTagView: View {
     var amount: Int
     var rarity: Card.Rarity
     
@@ -44,6 +44,6 @@ struct RarityTagView: View {
 
 #Preview {
     ForEach(Card.Rarity.allCases, id: \.self) { rarity in
-        RarityTagView(amount: 10, rarity: rarity)
+        RarityCountTagView(amount: 10, rarity: rarity)
     }
 }

@@ -11,7 +11,7 @@ import SwiftData
 struct CardList: View {
     @State var cardListViewModel: CardListViewModel
     let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
-    var userGroup: UserGroup?
+    var userGroup: UserGroup?   // don't put this in viewmodel cause it wont update from (@Query var userCollections: [UserCollection]) within viewmodel
     
     // SwiftUI EnvironmentObject not available in View initializer. It is injected after object initialiazation.
     init(group: Group, category: Category, userGroup: UserGroup?) {
@@ -43,9 +43,13 @@ struct CardList: View {
                 }
             }
             .navigationTitle(cardListViewModel.group.name)
-            .searchable(text: $cardListViewModel.filteredText, prompt: "Filter by name")
+            .searchable(text: $cardListViewModel.filteredText,  prompt: "Filter by name")
             .padding([.horizontal, .bottom])
             .toolbar {
+                Button("Group Information", systemImage: "info.circle") {
+                    cardListViewModel.isPresentingInfoSheet.toggle()
+                }
+                
                 Menu("Options", systemImage: "ellipsis") {
                     Section("Sort By") {
                         Menu(cardListViewModel.selectedSort.rawValue.capitalized, systemImage: "line.3.horizontal.decrease") {
@@ -74,7 +78,19 @@ struct CardList: View {
                     )
                 }
             }
+            .sheet(isPresented: $cardListViewModel.isPresentingInfoSheet) {
+                NavigationStack {
+                    InformationView(cardListViewModel: cardListViewModel, userGroup: userGroup)
+                    
+                }
+            }
         }
     }
     
 }
+//
+//#Preview {
+//    NavigationStack {
+//        CardList(group: Group.samples[0], category: Category.samples[0], userGroup: nil)
+//    }
+//}

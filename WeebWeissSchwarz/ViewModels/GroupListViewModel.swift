@@ -44,7 +44,7 @@ import SwiftUI
         case .name:
             groups.sort { $0.name < $1.name }
         case .newest:
-            groups.sort { $0.publishedOn > $1.publishedOn }
+            groups.sort { $0.publishedOn ?? .distantFuture > $1.publishedOn ?? .distantFuture }
         case .abbreviation:
             groups.sort { $0.abbreviation < $1.abbreviation }
 

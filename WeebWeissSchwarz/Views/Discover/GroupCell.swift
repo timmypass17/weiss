@@ -21,15 +21,15 @@ struct GroupCell: View {
                 
                 Text(group.abbreviation)
                     .foregroundStyle(.secondary)
-                    .font(.caption)
+//                    .font(.caption)
             }
             
-            HStack {
-                Text("\(userGroup?.ownedCount ?? 0) / 100")
-                    .foregroundStyle(.secondary)
-                    .font(.caption)
-                ProgressView(value: Double(userGroup?.ownedCount ?? 0) / 100)
-            }
+//            HStack {
+//                Text("\(userGroup?.ownedCount ?? 0) / 100")
+//                    .foregroundStyle(.secondary)
+//                    .font(.caption)
+//                ProgressView(value: Double(userGroup?.ownedCount ?? 0) / 100)
+//            }
         }
     }
 }

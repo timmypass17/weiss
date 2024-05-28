@@ -38,22 +38,14 @@ struct CardCell: View {
                             )
                     }
                     if isShowingRarity {
-                        HStack(spacing: 2) {
-                            Image(systemName: "sparkle")
-                                .imageScale(.small)
-                            Text(card.rarity.abbreviation)
-                        }
-                        .font(.caption2)
-                        .foregroundStyle(.white)
-                        .padding(4)
-
-                        .background(
-                            RoundedRectangle(cornerRadius: 5)
-                                .fill(
-                                    (isShowingMissing && !isOwned ? .black.opacity(0.7) : card.rarity.color)
-//                                        .opacity(isShowingMissing && !isOwned ? 0.2 : 1)
-                                )
-                        )
+                        RarityTagView(rarity: card.rarity)
+                            .background(
+                                RoundedRectangle(cornerRadius: 5)
+                                    .fill(
+                                        (isShowingMissing && !isOwned ? .black.opacity(0.7) : card.rarity.color)
+                                        //                                        .opacity(isShowingMissing && !isOwned ? 0.2 : 1)
+                                    )
+                            )
                     }
                 }
                 .padding(4)

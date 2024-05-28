@@ -16,7 +16,7 @@ struct Group {
     var groupID: Int
     var name: String
     var abbreviation: String
-    var publishedOn: Date
+    var publishedOn: Date?
 }
 
 extension Group: Hashable {}
@@ -45,16 +45,13 @@ extension Group: Decodable {
         
         if let date = dateFormatter.date(from: publishedDateString) {
             self.publishedOn = date
-        } else {
-            self.publishedOn = .distantFuture
         }
-        
     }
 }
 
 
 extension Group {
-    static let sample: [Group] = [
+    static let samples: [Group] = [
         Group(groupID: 23307, name: "Chainsaw Man", abbreviation: "CSM", publishedOn: .now),
         Group(groupID: 23508, name: "JoJo's Bizarre Adventure: Stardust Crusaders Premium Booster", abbreviation: "JJ", publishedOn: .now),
         Group(groupID: 23507, name: "[OSHI NO KO]", abbreviation: "OSK", publishedOn: .now)
